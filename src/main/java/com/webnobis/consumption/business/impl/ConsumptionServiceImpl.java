@@ -2,6 +2,7 @@ package com.webnobis.consumption.business.impl;
 
 import java.time.Month;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -44,6 +45,9 @@ public class ConsumptionServiceImpl implements ConsumptionService {
 	}
 	
 	private Set<Consumption> getConsumptions(Medium medium, Collection<Integer> years) {
+		if (years.isEmpty()) {
+			return Collections.emptySet();
+		}
 		int lastYear = new TreeSet<>(years).last();
 		return repositoryService.findCoverages()
 				.stream()

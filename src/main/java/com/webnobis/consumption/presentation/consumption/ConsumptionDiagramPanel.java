@@ -47,10 +47,9 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 				});
 			}
 			
-			consumptions.stream()
-				.sorted()
-				.forEach(consumption -> {
-					chartDataSet.addValue(consumption.getConsumption(), String.valueOf(consumption.getYear()), consumption.getMonth().getDisplayName(TextStyle.SHORT, Locale.GERMAN));
+			consumptions.forEach(consumption -> {
+					String barText = (Month.DECEMBER.equals(consumption.getMonth()))? String.valueOf(consumption.getYear()): "Letzte 12 Monate";
+					chartDataSet.addValue(consumption.getConsumption(), barText, "Summe");
 			});
 			
 			firstConsumption.ifPresent(consumption -> {

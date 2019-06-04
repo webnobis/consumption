@@ -15,20 +15,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.integration.junit4.JMockit;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.webnobis.consumption.business.CoverageService;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.repository.RepositoryService;
 
-@RunWith(JMockit.class)
+import mockit.Expectations;
+import mockit.Mocked;
+
 public class CoverageServiceTest {
 
 	@Mocked

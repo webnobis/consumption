@@ -1,1 +1,1 @@
-${java.home}/bin/java -jar ${project.build.finalName}.${project.packaging} ${deliver.repository.path}
+${java.home}\bin\java -cp lib\* -jar ${project.build.finalName}.${project.packaging} ${deliver.repository.path}

@@ -24,7 +24,7 @@ import com.webnobis.consumption.repository.RepositoryService;
 
 public class RepositoryServiceImpl implements RepositoryService {
 
-	public static final String DEFAULT_FOLDER = "coverage";
+	public static final String DEFAULT_FOLDER = "example";
 
 	private static final String HEADER = ResourceBundle.getBundle("repository").getString("repository.header");
 
@@ -34,11 +34,14 @@ public class RepositoryServiceImpl implements RepositoryService {
 
 	public RepositoryServiceImpl(Path folder) {
 		this.folder = Optional.ofNullable(folder).orElse(Paths.get(DEFAULT_FOLDER));
-		log.info("working folder is:" + folder.toAbsolutePath().toString());
+		log.info("working folder is: " + this.folder.toAbsolutePath().toString());
 	}
 
 	@Override
 	public Set<Coverage> findCoverages() {
+		if (!Files.exists(folder)) {
+			return Collections.emptySet();
+		}
 		Set<Coverage> coverages = new CopyOnWriteArraySet<>();
 		try {
 			Files.newDirectoryStream(folder, new CoverageFileFilter()).forEach(file -> coverages.addAll(findCoverages(file)));

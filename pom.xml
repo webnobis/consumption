@@ -69,7 +69,7 @@
 					<target>11</target>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
@@ -89,7 +89,7 @@
 						</systemProperty>
 					</systemProperties>
 				</configuration>
-			</plugin>
+			</plugin-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin
@@ -164,6 +164,15 @@
 					</execution>
 				</executions>
 			</plugin>
+   <plugin>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.0.0-M3</version>
+      <configuration>
+         <argLine>
+            -javaagent:${settings.localRepository}/org/jmockit/jmockit/1.46/jmockit-1.46.jar
+         </argLine>
+      </configuration>
+   </plugin>
 		</plugins>
 	</build>
 

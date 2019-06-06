@@ -3,7 +3,7 @@ package com.webnobis.consumption.presentation.consumption;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
 
 import javax.swing.JInternalFrame;
 
@@ -51,7 +51,7 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 	@Override
 	public void update() {
 		menuUpdateable.update();
-		Set<Consumption> consumptions = consumptionService.getConsumptions(menuSelection.getSelectedMedium(), menuSelection.getSelectedYears(), Report.MONTH.equals(report));
+		SortedSet<Consumption> consumptions = consumptionService.getConsumptions(menuSelection.getSelectedMedium(), menuSelection.getSelectedYears(), Report.MONTH.equals(report));
 		panel.update(consumptions);
 	}
 

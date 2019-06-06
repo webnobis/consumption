@@ -4,7 +4,6 @@ import java.time.Month;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public class ConsumptionServiceImpl implements ConsumptionService {
 	}
 
 	@Override
-	public Set<Consumption> getConsumptions(Medium medium, Collection<Integer> years, boolean monthly) {
+	public SortedSet<Consumption> getConsumptions(Medium medium, Collection<Integer> years, boolean monthly) {
 		Objects.requireNonNull(medium, "medium is null");
 		Objects.requireNonNull(years, "years is null");
 		

@@ -6,13 +6,14 @@ import java.nio.file.Path;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.webnobis.consumption.repository.RepositoryService;
 
 public class RepositoryMigrator {
 
-	private static final Logger log = Logger.getLogger(RepositoryMigrator.class);
+	private static final Logger log = LoggerFactory.getLogger(RepositoryMigrator.class);
 	
 	public static void main(String args[]) throws IOException {
 		log.info("start migation");

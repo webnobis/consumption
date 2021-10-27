@@ -5,7 +5,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.repository.impl.CoverageFileFilter;
@@ -17,7 +18,7 @@ public class FileNameWithLineToCoverageTransformer implements Function<String, C
 
 	private static final Pattern patternDateDialCount = Pattern.compile("^([0-9\\.]{10});([0-9\\.]+),([0-9]+).+$");
 	
-	private static final Logger log = Logger.getLogger(LineToCoverageTransformer.class);
+	private static final Logger log = LoggerFactory.getLogger(LineToCoverageTransformer.class);
 	
 	private final String medium;
 

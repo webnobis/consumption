@@ -8,13 +8,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.webnobis.consumption.model.Coverage;
 
 public class RepositoryServiceImpl extends com.webnobis.consumption.repository.impl.RepositoryServiceImpl {
 
-	private static final Logger log = Logger.getLogger(RepositoryServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(RepositoryServiceImpl.class);
 
 	public RepositoryServiceImpl(Path folder) {
 		super(folder);

@@ -17,7 +17,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.repository.RepositoryService;
@@ -28,7 +29,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
 	private static final String HEADER = ResourceBundle.getBundle("repository").getString("repository.header");
 
-	private static final Logger log = Logger.getLogger(RepositoryServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(RepositoryServiceImpl.class);
 
 	private final Path folder;
 

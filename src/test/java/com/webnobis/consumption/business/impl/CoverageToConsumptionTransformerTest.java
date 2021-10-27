@@ -1,19 +1,19 @@
 package com.webnobis.consumption.business.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Month;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 
-public class CoverageToConsumptionTransformerTest {
+class CoverageToConsumptionTransformerTest {
 
 	@Test
-	public void testApply() {
+	void testApply() {
 		Coverage c1 = new Coverage(1988,Month.JANUARY,Medium.GAS,400);
 		Coverage c2 = new Coverage(2001,Month.JULY,Medium.STROM,2000);
 		Coverage c3 = new Coverage(2,Month.SEPTEMBER,Medium.WASSER,2);

@@ -1,54 +1,57 @@
 package com.webnobis.consumption.business.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.webnobis.consumption.business.CoverageService;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.repository.RepositoryService;
 
-import mockit.Expectations;
-import mockit.Mocked;
+@ExtendWith(MockitoExtension.class)
+class CoverageServiceTest {
 
-public class CoverageServiceTest {
-
-	@Mocked
+	@Mock
 	private RepositoryService repositoryService;
+
+	@Captor
+	private ArgumentCaptor<Collection<Coverage>> coverageCaptor;
 
 	private CoverageService service;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		service = new CoverageServiceImpl(repositoryService);
 	}
 
 	@Test
-	public void testCreateNewCoveragesOfLastMonth() {
+	void testCreateNewCoveragesOfLastMonth() {
 		YearMonth yearMonth = YearMonth.now().minusMonths(1);
-		new Expectations() {
-			{
-				repositoryService.findCoverages();
-				times = 0;
-			}
-		};
 
-		Set<Coverage> expectedCoverages = Stream.of(Medium.values()).map(medium -> new Coverage(yearMonth, medium)).collect(Collectors.toSet());
+		Set<Coverage> expectedCoverages = Stream.of(Medium.values()).map(medium -> new Coverage(yearMonth, medium))
+				.collect(Collectors.toSet());
 		assertNotNull(expectedCoverages);
 		assertEquals(Medium.values().length, expectedCoverages.size());
 
@@ -63,20 +66,19 @@ public class CoverageServiceTest {
 			assertTrue(mediums.contains(coverage.getMedium()));
 			assertEquals(0f, coverage.getDialCount(), 0f);
 		});
+
+		verifyNoInteractions(repositoryService);
 	}
 
 	@Test
-	public void testGetCoverages() {
+	void testGetCoverages() {
 		int year = 2020;
 		Month month = Month.AUGUST;
 		Set<Coverage> foundCoverages = createFoundCoverages(year);
-		new Expectations() {
-			{
-				repositoryService.findCoverages();
-				result = foundCoverages;
-			}
-		};
-		Set<Coverage> expectedCoverages = foundCoverages.stream().filter(coverage -> (year == coverage.getYear())).filter(coverage -> month.equals(coverage.getMonth())).collect(Collectors.toSet());
+		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
+
+		Set<Coverage> expectedCoverages = foundCoverages.stream().filter(coverage -> (year == coverage.getYear()))
+				.filter(coverage -> month.equals(coverage.getMonth())).collect(Collectors.toSet());
 		assertNotNull(expectedCoverages);
 		assertEquals(Medium.values().length, expectedCoverages.size());
 
@@ -93,26 +95,23 @@ public class CoverageServiceTest {
 	}
 
 	private static Set<Coverage> createFoundCoverages(int expectedYear) {
-		Set<Coverage> coverages = new HashSet<>();
-		IntStream.of(2000, 1998, expectedYear, 1988).forEach(year -> {
-			Stream.of(Month.values()).forEach(month -> {
-				Stream.of(Medium.values()).forEach(medium -> {
-					coverages.add(new Coverage(year, month, medium, Float.MIN_VALUE));
-				});
-			});
-		});
+		Set<Coverage> coverages = IntStream.of(2000, 1998, expectedYear, 1988).boxed()
+				.flatMap(year -> Stream.of(Month.values())
+						.flatMap(month -> Stream.of(Medium.values())
+								.map(medium -> new Coverage(year, month, medium, Float.MIN_VALUE))))
+				.collect(Collectors.toSet());
 		return coverages;
 	}
 
 	@Test
-	public void testStoreCoverages() {
-		Collection<Coverage> coverages = Arrays.asList(new Coverage(1988, Month.FEBRUARY, Medium.WASSER, Float.MIN_VALUE), new Coverage(1877, Month.MAY, Medium.STROM, Float.MAX_VALUE));
-		new Expectations() {
-			{
-				repositoryService.storeCoverages(coverages);
-			}
-		};
+	void testStoreCoverages() {
+		Collection<Coverage> coverages = Arrays.asList(
+				new Coverage(1988, Month.FEBRUARY, Medium.WASSER, Float.MIN_VALUE),
+				new Coverage(1877, Month.MAY, Medium.STROM, Float.MAX_VALUE));
 
 		service.storeCoverages(coverages);
+
+		verify(repositoryService).storeCoverages(coverageCaptor.capture());
+		assertEquals(coverages, coverageCaptor.getValue());
 	}
 }

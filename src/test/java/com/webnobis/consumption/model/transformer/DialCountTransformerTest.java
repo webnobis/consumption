@@ -1,15 +1,13 @@
 package com.webnobis.consumption.model.transformer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import com.webnobis.consumption.model.transformer.DialCountTransformer;
-
-public class DialCountTransformerTest {
+class DialCountTransformerTest {
 
 	@Test
-	public void testToFloat() {
+	void testToFloat() {
 		assertEquals(0.0f, DialCountTransformer.toFloat(null), 0.0f);
 		assertEquals(0.0f, DialCountTransformer.toFloat(""), 0.0f);
 		assertEquals(0.0f, DialCountTransformer.toFloat("000000000"), 0.0f);
@@ -21,7 +19,7 @@ public class DialCountTransformerTest {
 	}
 
 	@Test
-	public void testToText() {
+	void testToText() {
 		assertEquals("0.0", DialCountTransformer.toText(0));
 		assertEquals("0.0", DialCountTransformer.toText(Float.NaN));
 		assertEquals("-8888.6", DialCountTransformer.toText(-8888.5555f));

@@ -36,6 +36,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>4.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>4.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 			<version>1.5.3</version>
@@ -175,20 +187,19 @@
 					<argLine>--add-opens
 						${project.module}/${project.module}=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.config=ALL-UNNAMED
+						${project.module}/${project.module}.business=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.export=ALL-UNNAMED
+						${project.module}/${project.module}.business.impl=ALL-UNNAMED
+						--add-opens
+						${project.module}/${project.module}.migrator.v1=ALL-UNNAMED
 						--add-opens
 						${project.module}/${project.module}.model=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.persistence=ALL-UNNAMED
+						${project.module}/${project.module}.model.transformer=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.service=ALL-UNNAMED
-						--add-opens ${project.module}/${project.module}.view=ALL-UNNAMED
+						${project.module}/${project.module}.repository=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.view.entry=ALL-UNNAMED
-						--add-opens
-						${project.module}/${project.module}.view.items=ALL-UNNAMED</argLine>
+						${project.module}/${project.module}.repository.impl=ALL-UNNAMED</argLine>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -1,8 +1,9 @@
 package com.webnobis.consumption.business.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -19,9 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.webnobis.consumption.business.ConsumptionService;
 import com.webnobis.consumption.model.Consumption;
@@ -29,10 +33,8 @@ import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.repository.RepositoryService;
 
-import mockit.Expectations;
-import mockit.Mocked;
-
-public class ConsumptionServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ConsumptionServiceTest {
 
 	private static final Collection<Integer> YEARS = Arrays.asList(1999, 2010, 2002, 2015, 2016, 2003, 1998);
 
@@ -46,13 +48,13 @@ public class ConsumptionServiceTest {
 
 	private static Set<Coverage> foundCoverages;
 
-	@Mocked
+	@Mock
 	private RepositoryService repositoryService;
 
 	private ConsumptionService service;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
 		dialCount = new AtomicInteger(21013); // start value
 		foundCoverages = createFoundCoverages();
 	}
@@ -79,19 +81,14 @@ public class ConsumptionServiceTest {
 				.collect(Collectors.toSet());
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		service = new ConsumptionServiceImpl(repositoryService);
 	}
 
 	@Test
-	public void testGetYearConsumptions() {
-		new Expectations() {
-			{
-				repositoryService.findCoverages();
-				result = foundCoverages;
-			}
-		};
+	void testGetYearConsumptions() {
+		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
 		Map<Integer, List<Consumption>> yearConsumptions = toConsumptions(foundCoverages).stream()
 				.filter(consumption -> FILTER_YEARS.contains(consumption.getYear()))
@@ -113,13 +110,8 @@ public class ConsumptionServiceTest {
 	}
 
 	@Test
-	public void testGetMonthConsumptions() {
-		new Expectations() {
-			{
-				repositoryService.findCoverages();
-				result = foundCoverages;
-			}
-		};
+	void testGetMonthConsumptions() {
+		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
 		Set<Consumption> expectedConsumptions = toConsumptions(foundCoverages).stream()
 				.filter(consumption -> FILTER_YEARS.contains(consumption.getYear())).collect(Collectors.toSet());

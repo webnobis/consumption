@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
-import com.webnobis.consumption.repository.impl.CoverageToLineTransformer;
+import com.webnobis.consumption.repository.file.CoverageToLineTransformer;
 
 class CoverageToLineTransformerTest {
 

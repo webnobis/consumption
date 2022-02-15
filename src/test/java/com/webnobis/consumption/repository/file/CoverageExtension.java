@@ -1,4 +1,4 @@
-package com.webnobis.consumption.repository.impl;
+package com.webnobis.consumption.repository.file;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -6,8 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -62,12 +63,12 @@ public class CoverageExtension
 		coverageReader = this::readCoverages;
 	}
 
-	private Map<Path, List<Coverage>> readCoverages() {
+	private Map<Path, Set<Coverage>> readCoverages() {
 		try {
 			return Files.walk(tmpFolder).filter(Files::isRegularFile).collect(Collectors.toMap(file -> file, file -> {
 				try {
 					return Files.readAllLines(file, StandardCharsets.UTF_8).stream().map(lineToCoverageTransformer)
-							.toList();
+							.filter(Objects::nonNull).collect(Collectors.toSet());
 				} catch (IOException e) {
 					throw new UncheckedIOException(e);
 				}
@@ -133,15 +134,15 @@ public class CoverageExtension
 		 * 
 		 * @return coverages file separated
 		 */
-		Map<Path, List<Coverage>> readToMap();
+		Map<Path, Set<Coverage>> readToMap();
 
 		/**
 		 * Reads all test coverages
 		 * 
 		 * @return coverages
 		 */
-		default List<Coverage> readToList() {
-			return readToMap().values().stream().flatMap(List::stream).toList();
+		default Set<Coverage> readToSet() {
+			return readToMap().values().stream().flatMap(Set::stream).collect(Collectors.toSet());
 		}
 
 	}

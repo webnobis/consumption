@@ -7,5 +7,6 @@ module com.webnobis.consumption {
 	requires org.jfree.jfreechart;
 
 	exports com.webnobis.consumption;
+	exports com.webnobis.consumption.repository.file.migrator.v1;
 
 }

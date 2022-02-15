@@ -10,12 +10,12 @@ import com.webnobis.consumption.business.impl.CoverageServiceImpl;
 import com.webnobis.consumption.business.impl.YearServiceImpl;
 import com.webnobis.consumption.presentation.ApplicationFrame;
 import com.webnobis.consumption.repository.RepositoryService;
-import com.webnobis.consumption.repository.impl.RepositoryServiceImpl;
+import com.webnobis.consumption.repository.file.FileRepositoryService;
 
 public class ConsumptionMain {
 
 	public static void main(String[] args) {
-		RepositoryService repositoryService = new RepositoryServiceImpl((args.length > 0)? Paths.get(args[0]): null);
+		RepositoryService repositoryService = new FileRepositoryService((args.length > 0)? Paths.get(args[0]): null);
 		YearService yearService = new YearServiceImpl(repositoryService);
 		ConsumptionService consumptionService = new ConsumptionServiceImpl(repositoryService);
 		CoverageService coverageService = new CoverageServiceImpl(repositoryService);

@@ -1,4 +1,4 @@
-package com.webnobis.consumption.migrator.v1;
+package com.webnobis.consumption.repository.file.migrator.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,7 +10,7 @@ import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 
 class FileNameWithLineToCoverageTransformerTest {
-	
+
 	private static final String OLD_LINE = "30.08.2008;710,0 m³;31;7,7 m³;Aug 2008;7,7 m³;;\"Aug\";";
 
 	@Test

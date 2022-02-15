@@ -1,6 +1,9 @@
-package com.webnobis.consumption.repository.impl;
+package com.webnobis.consumption.repository.file;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +11,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.webnobis.consumption.repository.impl.CoverageExtension.CoverageReader;
+import com.webnobis.consumption.repository.file.CoverageExtension.CoverageReader;
 
 @ExtendWith(CoverageExtension.class)
 class CoverageExtensionTest {
@@ -28,16 +31,16 @@ class CoverageExtensionTest {
 	@Test
 	void testCoverageReader(CoverageReader coverageReader) {
 		assertNotNull(coverageReader);
-		assertFalse(coverageReader.readToList().isEmpty());
+		assertFalse(coverageReader.readToSet().isEmpty());
 	}
 
 	@Test
 	void testBoth(CoverageReader coverageReader, Path folder) {
 		assertNotNull(coverageReader);
 		assertNotNull(folder);
-		coverageReader.readToMap().forEach((path, coverages)-> {
+		coverageReader.readToMap().forEach((path, coverages) -> {
 			assertEquals(folder, path.getParent());
-			assertFalse(coverageReader.readToList().isEmpty());
+			assertFalse(coverageReader.readToSet().isEmpty());
 		});
 	}
 

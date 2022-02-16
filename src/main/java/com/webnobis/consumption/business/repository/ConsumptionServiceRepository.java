@@ -17,6 +17,12 @@ import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.model.transformer.CoverageToConsumptionTransformer;
 import com.webnobis.consumption.repository.RepositoryService;
 
+/**
+ * Repository based consumption service
+ * 
+ * @author steffen
+ *
+ */
 public record ConsumptionServiceRepository(RepositoryService repositoryService) implements ConsumptionService {
 
 	@Override
@@ -45,9 +51,8 @@ public record ConsumptionServiceRepository(RepositoryService repositoryService) 
 	}
 
 	private Stream<Consumption> getAnnualConsumptions(Medium medium, Collection<Integer> years) {
-		return getMonthlyAnnualConsumptions(medium, years).stream()
-				.collect(Collectors.groupingBy(consumption -> consumption.year())).entrySet().stream()
-				.map(entry -> toSum(entry.getValue(), medium, entry.getKey()));
+		return getMonthlyAnnualConsumptions(medium, years).stream().collect(Collectors.groupingBy(Consumption::year))
+				.entrySet().stream().map(entry -> toSum(entry.getValue(), medium, entry.getKey()));
 	}
 
 	private Stream<Consumption> getLast12MonthConsumptions(Medium medium, Collection<Integer> years) {

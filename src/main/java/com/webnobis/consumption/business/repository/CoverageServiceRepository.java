@@ -12,6 +12,12 @@ import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.repository.RepositoryService;
 
+/**
+ * Repository based coverage service
+ * 
+ * @author steffen
+ *
+ */
 public record CoverageServiceRepository(RepositoryService repositoryService) implements CoverageService {
 
 	@Override

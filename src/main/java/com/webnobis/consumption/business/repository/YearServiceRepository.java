@@ -11,6 +11,12 @@ import com.webnobis.consumption.business.YearService;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.repository.RepositoryService;
 
+/**
+ * Repository based year service
+ * 
+ * @author steffen
+ *
+ */
 public record YearServiceRepository(RepositoryService repositoryService) implements YearService {
 
 	@Override

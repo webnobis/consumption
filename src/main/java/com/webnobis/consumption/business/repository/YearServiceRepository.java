@@ -21,8 +21,8 @@ public record YearServiceRepository(RepositoryService repositoryService) impleme
 	@Override
 	public Map<Integer, List<Month>> getYearsWithMonths() {
 		return repositoryService.findCoverages().parallelStream()
-				.map(coverage -> YearMonth.of(coverage.year(), coverage.month())).distinct()
-				.collect(Collectors.groupingBy(YearMonth::getYear)).entrySet().parallelStream().sorted()
+				.map(coverage -> YearMonth.of(coverage.year(), coverage.month())).distinct().sorted()
+				.collect(Collectors.groupingBy(YearMonth::getYear)).entrySet().parallelStream()
 				.collect(Collectors.toMap(Entry::getKey,
 						entry -> entry.getValue().stream().map(YearMonth::getMonth).sorted().toList()));
 	}

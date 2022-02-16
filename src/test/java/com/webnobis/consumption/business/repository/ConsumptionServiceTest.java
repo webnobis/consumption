@@ -28,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.webnobis.consumption.business.ConsumptionService;
-import com.webnobis.consumption.business.repository.ConsumptionServiceRepository;
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;

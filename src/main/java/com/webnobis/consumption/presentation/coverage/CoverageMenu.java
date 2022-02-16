@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -79,7 +79,7 @@ public class CoverageMenu extends JMenuBar implements Storable, Updateable {
 	@Override
 	public void update() {
 		open.removeAll();
-		Map<Integer,Set<Month>> yearsWithMonths = yearService.getYearsWithMonths();
+		Map<Integer,List<Month>> yearsWithMonths = yearService.getYearsWithMonths();
 		yearsWithMonths.keySet().stream().sorted().forEach(year -> {
 			JMenu menu = new JMenu(String.valueOf(year));
 			yearsWithMonths.get(year).stream().sorted().forEach(month -> {

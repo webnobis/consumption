@@ -9,13 +9,11 @@ import java.util.TreeSet;
 
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.model.Medium;
-import com.webnobis.consumption.repository.RepositoryService;
 
 /**
  * Consumption service as business filter
  * 
  * @author steffen
- * @see RepositoryService#findCoverages()
  */
 public interface ConsumptionService {
 

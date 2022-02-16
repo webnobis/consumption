@@ -196,7 +196,7 @@
 						--add-opens
 						${project.module}/${project.module}.business=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.business.impl=ALL-UNNAMED
+						${project.module}/${project.module}.business.repository=ALL-UNNAMED
 						--add-opens
 						${project.module}/${project.module}.model=ALL-UNNAMED
 						--add-opens

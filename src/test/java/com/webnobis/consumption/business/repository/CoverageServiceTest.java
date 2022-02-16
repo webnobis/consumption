@@ -1,4 +1,4 @@
-package com.webnobis.consumption.business.impl;
+package com.webnobis.consumption.business.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,6 +12,7 @@ import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -43,20 +44,19 @@ class CoverageServiceTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		service = new CoverageServiceImpl(repositoryService);
+		service = new CoverageServiceRepository(repositoryService);
 	}
 
 	@Test
 	void testCreateNewCoveragesOfLastMonth() {
 		YearMonth yearMonth = YearMonth.now().minusMonths(1);
 
-		Set<Coverage> expectedCoverages = Stream.of(Medium.values())
-				.map(medium -> new Coverage(yearMonth.getYear(), yearMonth.getMonth(), medium, 0))
-				.collect(Collectors.toSet());
+		List<Coverage> expectedCoverages = Stream.of(Medium.values())
+				.map(medium -> new Coverage(yearMonth.getYear(), yearMonth.getMonth(), medium, 0)).sorted().toList();
 		assertNotNull(expectedCoverages);
 		assertEquals(Medium.values().length, expectedCoverages.size());
 
-		Set<Coverage> coverages = service.createNewCoveragesOfLastMonth();
+		List<Coverage> coverages = service.createNewCoveragesOfLastMonth();
 		assertNotNull(coverages);
 		assertEquals(Medium.values().length, coverages.size());
 
@@ -78,12 +78,12 @@ class CoverageServiceTest {
 		Set<Coverage> foundCoverages = createFoundCoverages(year);
 		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
-		Set<Coverage> expectedCoverages = foundCoverages.stream().filter(coverage -> (year == coverage.year()))
-				.filter(coverage -> month.equals(coverage.month())).collect(Collectors.toSet());
+		List<Coverage> expectedCoverages = foundCoverages.stream().filter(coverage -> (year == coverage.year()))
+				.filter(coverage -> month.equals(coverage.month())).sorted().toList();
 		assertNotNull(expectedCoverages);
 		assertEquals(Medium.values().length, expectedCoverages.size());
 
-		Set<Coverage> coverages = service.getCoverages(year, month);
+		List<Coverage> coverages = service.getCoverages(year, month);
 		assertNotNull(coverages);
 		assertEquals(Medium.values().length, coverages.size());
 

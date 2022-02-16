@@ -9,9 +9,9 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.webnobis.consumption.business.impl.ConsumptionServiceImpl;
-import com.webnobis.consumption.business.impl.CoverageServiceImpl;
-import com.webnobis.consumption.business.impl.YearServiceImpl;
+import com.webnobis.consumption.business.repository.ConsumptionServiceRepository;
+import com.webnobis.consumption.business.repository.CoverageServiceRepository;
+import com.webnobis.consumption.business.repository.YearServiceRepository;
 import com.webnobis.consumption.repository.file.FileRepositoryService;
 
 class ConsumptionMainTest {
@@ -21,9 +21,9 @@ class ConsumptionMainTest {
 	@Test
 	void testMain() {
 		ConsumptionMain.application = (yearService, consumptionService, coverageService) -> {
-			assertEquals(YearServiceImpl.class, yearService.getClass());
-			assertEquals(ConsumptionServiceImpl.class, consumptionService.getClass());
-			assertEquals(CoverageServiceImpl.class, coverageService.getClass());
+			assertEquals(YearServiceRepository.class, yearService.getClass());
+			assertEquals(ConsumptionServiceRepository.class, consumptionService.getClass());
+			assertEquals(CoverageServiceRepository.class, coverageService.getClass());
 
 			Stream.of(yearService, consumptionService, coverageService).map(obj -> {
 				try {

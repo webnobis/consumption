@@ -3,9 +3,9 @@ package com.webnobis.consumption.presentation.coverage;
 import java.awt.GridLayout;
 import java.time.Month;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.swing.JLabel;
@@ -25,14 +25,14 @@ public class CoveragePanel extends JPanel {
 
 	private final Map<Medium, MediumPanel> mediums;
 
-	public CoveragePanel(SortedSet<Coverage> coverages, ShouldStore shouldStore) {
+	public CoveragePanel(List<Coverage> coverages, ShouldStore shouldStore) {
 		super(new GridLayout(Objects.requireNonNull(coverages, "coverages is null").size() + 3, 1, 0, 2));
 		if (coverages.isEmpty()) {
 			throw new IllegalArgumentException("coverages is empty");
 		}
 
 		this.add(new JLabel("Erfassungsmonat"));
-		Coverage firstCoverage = coverages.first();
+		Coverage firstCoverage = coverages.get(0);
 		year = firstCoverage.year();
 		month = firstCoverage.month();
 		this.add(new MonthYearPanel(month, year));

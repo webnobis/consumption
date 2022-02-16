@@ -1,4 +1,4 @@
-package com.webnobis.consumption.business.impl;
+package com.webnobis.consumption.business.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.webnobis.consumption.business.ConsumptionService;
+import com.webnobis.consumption.business.repository.ConsumptionServiceRepository;
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
@@ -82,7 +83,7 @@ class ConsumptionServiceTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		service = new ConsumptionServiceImpl(repositoryService);
+		service = new ConsumptionServiceRepository(repositoryService);
 	}
 
 	@Test

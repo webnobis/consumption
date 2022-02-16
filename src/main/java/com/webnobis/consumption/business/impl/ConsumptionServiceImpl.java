@@ -17,13 +17,7 @@ import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.model.transformer.CoverageToConsumptionTransformer;
 import com.webnobis.consumption.repository.RepositoryService;
 
-public class ConsumptionServiceImpl implements ConsumptionService {
-
-	private final RepositoryService repositoryService;
-
-	public ConsumptionServiceImpl(RepositoryService repositoryService) {
-		this.repositoryService = Objects.requireNonNull(repositoryService, "repositoryService is null");
-	}
+public record ConsumptionServiceImpl(RepositoryService repositoryService) implements ConsumptionService {
 
 	@Override
 	public SortedSet<Consumption> getConsumptions(Medium medium, Collection<Integer> years, boolean monthly) {

@@ -14,13 +14,7 @@ import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.repository.RepositoryService;
 
-public class CoverageServiceImpl implements CoverageService {
-
-	private final RepositoryService repositoryService;
-
-	public CoverageServiceImpl(RepositoryService repositoryService) {
-		this.repositoryService = Objects.requireNonNull(repositoryService, "repositoryService is null");
-	}
+public record CoverageServiceImpl(RepositoryService repositoryService) implements CoverageService {
 
 	@Override
 	public SortedSet<Coverage> createNewCoveragesOfCurrentMonth() {

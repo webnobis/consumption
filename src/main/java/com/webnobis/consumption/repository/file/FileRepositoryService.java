@@ -70,6 +70,15 @@ public class FileRepositoryService implements RepositoryService {
 		coverageToLineTransformer = new CoverageToLineTransformer();
 	}
 
+	/**
+	 * Get the used folder
+	 * 
+	 * @return folder
+	 */
+	public Path getFolder() {
+		return folder;
+	}
+
 	@Override
 	public Set<Coverage> findCoverages() {
 		if (!Files.exists(folder)) {

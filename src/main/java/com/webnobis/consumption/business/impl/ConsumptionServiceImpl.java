@@ -14,6 +14,7 @@ import com.webnobis.consumption.business.ConsumptionService;
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
+import com.webnobis.consumption.model.transformer.CoverageToConsumptionTransformer;
 import com.webnobis.consumption.repository.RepositoryService;
 
 public class ConsumptionServiceImpl implements ConsumptionService {
@@ -39,8 +40,8 @@ public class ConsumptionServiceImpl implements ConsumptionService {
 		Objects.requireNonNull(years);
 		Function<Coverage, Consumption> transformer = new CoverageToConsumptionTransformer();
 		return repositoryService.findCoverages().parallelStream()
-				.filter(consumption -> medium.equals(consumption.getMedium()))
-				.filter(consumption -> years.contains(consumption.getYear())).map(transformer).sorted().toList();
+				.filter(consumption -> medium.equals(consumption.medium()))
+				.filter(consumption -> years.contains(consumption.year())).map(transformer).sorted().toList();
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class ConsumptionServiceImpl implements ConsumptionService {
 
 	private Stream<Consumption> getAnnualConsumptions(Medium medium, Collection<Integer> years) {
 		return getMonthlyAnnualConsumptions(medium, years).stream()
-				.collect(Collectors.groupingBy(consumption -> consumption.getYear())).entrySet().stream()
+				.collect(Collectors.groupingBy(consumption -> consumption.year())).entrySet().stream()
 				.map(entry -> toSum(entry.getValue(), medium, entry.getKey()));
 	}
 
@@ -63,9 +64,8 @@ public class ConsumptionServiceImpl implements ConsumptionService {
 
 	private static Consumption toSum(Collection<Consumption> consumptions, Medium missingMedium, int missingYear) {
 		return consumptions.parallelStream()
-				.reduce((c1, c2) -> new Consumption(c1.getYear(), Month.DECEMBER, c1.getMedium(),
-						Math.max(c1.getDialCount(), c2.getDialCount()), c1.getConsumption() + c2.getConsumption(),
-						false))
+				.reduce((c1, c2) -> new Consumption(c1.year(), Month.DECEMBER, c1.medium(),
+						Math.max(c1.dialCount(), c2.dialCount()), c1.consumption() + c2.consumption(), false))
 				.orElse(new Consumption(missingYear, Month.DECEMBER, missingMedium, 0, 0, false));
 	}
 }

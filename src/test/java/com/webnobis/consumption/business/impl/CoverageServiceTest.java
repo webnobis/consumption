@@ -50,7 +50,8 @@ class CoverageServiceTest {
 	void testCreateNewCoveragesOfLastMonth() {
 		YearMonth yearMonth = YearMonth.now().minusMonths(1);
 
-		Set<Coverage> expectedCoverages = Stream.of(Medium.values()).map(medium -> new Coverage(yearMonth, medium))
+		Set<Coverage> expectedCoverages = Stream.of(Medium.values())
+				.map(medium -> new Coverage(yearMonth.getYear(), yearMonth.getMonth(), medium, 0))
 				.collect(Collectors.toSet());
 		assertNotNull(expectedCoverages);
 		assertEquals(Medium.values().length, expectedCoverages.size());
@@ -61,10 +62,10 @@ class CoverageServiceTest {
 
 		EnumSet<Medium> mediums = EnumSet.allOf(Medium.class);
 		coverages.forEach(coverage -> {
-			assertEquals(yearMonth.getYear(), coverage.getYear());
-			assertEquals(yearMonth.getMonth(), coverage.getMonth());
-			assertTrue(mediums.contains(coverage.getMedium()));
-			assertEquals(0f, coverage.getDialCount(), 0f);
+			assertEquals(yearMonth.getYear(), coverage.year());
+			assertEquals(yearMonth.getMonth(), coverage.month());
+			assertTrue(mediums.contains(coverage.medium()));
+			assertEquals(0f, coverage.dialCount(), 0f);
 		});
 
 		verifyNoInteractions(repositoryService);
@@ -77,8 +78,8 @@ class CoverageServiceTest {
 		Set<Coverage> foundCoverages = createFoundCoverages(year);
 		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
-		Set<Coverage> expectedCoverages = foundCoverages.stream().filter(coverage -> (year == coverage.getYear()))
-				.filter(coverage -> month.equals(coverage.getMonth())).collect(Collectors.toSet());
+		Set<Coverage> expectedCoverages = foundCoverages.stream().filter(coverage -> (year == coverage.year()))
+				.filter(coverage -> month.equals(coverage.month())).collect(Collectors.toSet());
 		assertNotNull(expectedCoverages);
 		assertEquals(Medium.values().length, expectedCoverages.size());
 
@@ -88,9 +89,9 @@ class CoverageServiceTest {
 
 		EnumSet<Medium> mediums = EnumSet.allOf(Medium.class);
 		coverages.forEach(coverage -> {
-			assertEquals(year, coverage.getYear());
-			assertEquals(month, coverage.getMonth());
-			assertTrue(mediums.contains(coverage.getMedium()));
+			assertEquals(year, coverage.year());
+			assertEquals(month, coverage.month());
+			assertTrue(mediums.contains(coverage.medium()));
 		});
 	}
 

@@ -1,5 +1,6 @@
 package com.webnobis.consumption.repository.file.migrator.v1;
 
+import java.time.YearMonth;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -9,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.webnobis.consumption.model.Coverage;
+import com.webnobis.consumption.model.Medium;
+import com.webnobis.consumption.model.transformer.DateTransformer;
+import com.webnobis.consumption.model.transformer.DialCountTransformer;
 import com.webnobis.consumption.repository.file.FileRepositoryService;
 
 /**
@@ -38,7 +42,7 @@ public class FileNameWithLineToCoverageTransformer implements Function<String, C
 			medium = m.group(1);
 		} else {
 			medium = null;
-			log.info("fileName not matched: " + fileName);
+			log.info("fileName {} not matched", fileName);
 		}
 	}
 
@@ -46,10 +50,11 @@ public class FileNameWithLineToCoverageTransformer implements Function<String, C
 	public Coverage apply(String line) {
 		Matcher m = patternDateDialCount.matcher(Objects.requireNonNull(line, "line is null"));
 		if (m.find()) {
-			String dialCount = m.group(2) + '.' + m.group(3);
-			return new Coverage(m.group(1), medium, dialCount);
+			float dialCount = DialCountTransformer.toFloat(m.group(2) + '.' + m.group(3));
+			YearMonth yearMonth = DateTransformer.toYearAndMonth(m.group(1));
+			return new Coverage(yearMonth.getYear(), yearMonth.getMonth(), Medium.valueOf(medium), dialCount);
 		} else if (log.isDebugEnabled()) {
-			log.debug("line not matched: " + line);
+			log.debug("line {} not matched", line);
 		}
 		return null;
 	}

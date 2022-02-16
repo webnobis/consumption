@@ -34,28 +34,31 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 	public void update(SortedSet<Consumption> consumptions) {
 		if (Optional.ofNullable(consumptions).filter(col -> col.size() > 1).isPresent()) {
 			DefaultCategoryDataset chartDataSet = new DefaultCategoryDataset();
-			Medium medium = Objects.requireNonNull(consumptions.first().getMedium());
+			Medium medium = Objects.requireNonNull(consumptions.first().medium());
 			switch (report) {
 			case MONTH:
 				// fill missing months of first year
-				String firstYear = String.valueOf(consumptions.first().getYear());
-				Arrays.stream(Month.values())
-				.filter(month -> (month.compareTo(consumptions.first().getMonth()) < 0))
-				.forEach(month -> {
-					chartDataSet.addValue(0, firstYear, month.getDisplayName(TextStyle.SHORT, Locale.GERMAN));
-				});
+				String firstYear = String.valueOf(consumptions.first().year());
+				Arrays.stream(Month.values()).filter(month -> (month.compareTo(consumptions.first().month()) < 0))
+						.forEach(month -> {
+							chartDataSet.addValue(0, firstYear, month.getDisplayName(TextStyle.SHORT, Locale.GERMAN));
+						});
 				// all months
 				consumptions.forEach(consumption -> {
-					chartDataSet.addValue(consumption.getConsumption(), String.valueOf(consumption.getYear()), consumption.getMonth().getDisplayName(TextStyle.SHORT, Locale.GERMAN));
+					chartDataSet.addValue(consumption.consumption(), String.valueOf(consumption.year()),
+							consumption.month().getDisplayName(TextStyle.SHORT, Locale.GERMAN));
 				});
-				super.setChart(ChartFactory.createLineChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(), chartDataSet, PlotOrientation.VERTICAL, true, true, false));
+				super.setChart(ChartFactory.createLineChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(),
+						chartDataSet, PlotOrientation.VERTICAL, true, true, false));
 				break;
 			case YEAR:
 				consumptions.forEach(consumption -> {
-					String barText = (Month.DECEMBER.equals(consumption.getMonth())) ? String.valueOf(consumption.getYear()) : "Letzte 12 Monate";
-					chartDataSet.addValue(consumption.getConsumption(), barText, "Summe");
+					String barText = (Month.DECEMBER.equals(consumption.month())) ? String.valueOf(consumption.year())
+							: "Letzte 12 Monate";
+					chartDataSet.addValue(consumption.consumption(), barText, "Summe");
 				});
-				super.setChart(ChartFactory.createBarChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(), chartDataSet, PlotOrientation.VERTICAL, true, true, false));
+				super.setChart(ChartFactory.createBarChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(),
+						chartDataSet, PlotOrientation.VERTICAL, true, true, false));
 				break;
 			default:
 			}

@@ -206,6 +206,8 @@
 						--add-opens
 						${project.module}/${project.module}.repository.file=ALL-UNNAMED
 						--add-opens
+						${project.module}/${project.module}.repository.file.transformer=ALL-UNNAMED
+						--add-opens
 						${project.module}/${project.module}.repository.file.migrator.v1=ALL-UNNAMED</argLine>
 				</configuration>
 			</plugin>

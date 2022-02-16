@@ -57,7 +57,7 @@ class FileRepositoryServiceTest {
 		Coverage coverage = new Coverage(YEAR_1, MONTH, MEDIUM, VALUE);
 		Map<Path, Set<Coverage>> coverages = coverageReader.readToMap();
 		assertTrue(coverages.get(tmpFolder.resolve(FILE_1)).stream().noneMatch(coverage::equals));
-		
+
 		service.storeCoverages(Collections.singleton(coverage));
 
 		coverages = coverageReader.readToMap();
@@ -73,10 +73,10 @@ class FileRepositoryServiceTest {
 		assertTrue(coverages.keySet().stream().map(file -> file.getFileName().toString()).anyMatch(FILE_2::equals));
 		coverages.values().stream().filter(set -> set.size() == 1).map(set -> set.iterator().next()).findAny()
 				.ifPresentOrElse(coverage -> {
-					assertEquals(YEAR_2, coverage.getYear());
-					assertEquals(MONTH, coverage.getMonth());
-					assertEquals(MEDIUM, coverage.getMedium());
-					assertEquals(VALUE, coverage.getDialCount());
+					assertEquals(YEAR_2, coverage.year());
+					assertEquals(MONTH, coverage.month());
+					assertEquals(MEDIUM, coverage.medium());
+					assertEquals(VALUE, coverage.dialCount());
 				}, () -> fail(new NoSuchElementException()));
 	}
 

@@ -66,12 +66,12 @@ public interface ConsumptionService {
 		Objects.requireNonNull(startMonth);
 		SortedSet<Integer> sortedYears = new TreeSet<>(Objects.requireNonNull(years));
 		return Objects.requireNonNull(getMonthlyAnnualConsumptions(medium, years)).stream().filter(consumption -> {
-			if (sortedYears.first().equals(consumption.getYear())) {
-				return startMonth.compareTo(consumption.getMonth()) < 1;
-			} else if (sortedYears.last().equals(consumption.getYear())) {
-				return startMonth.compareTo(consumption.getMonth()) > 0;
+			if (sortedYears.first().equals(consumption.year())) {
+				return startMonth.compareTo(consumption.month()) < 1;
+			} else if (sortedYears.last().equals(consumption.year())) {
+				return startMonth.compareTo(consumption.month()) > 0;
 			} else {
-				return years.contains(consumption.getYear());
+				return years.contains(consumption.year());
 			}
 		}).toList();
 	}
@@ -87,7 +87,7 @@ public interface ConsumptionService {
 	default List<Consumption> getMonthlyConsumptions(Medium medium, Collection<Integer> years, Month month) {
 		Objects.requireNonNull(month);
 		return Objects.requireNonNull(getMonthlyAnnualConsumptions(medium, years)).stream()
-				.filter(consumption -> month.equals(consumption.getMonth())).toList();
+				.filter(consumption -> month.equals(consumption.month())).toList();
 	}
 
 }

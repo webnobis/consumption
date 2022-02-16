@@ -75,9 +75,8 @@ class ConsumptionServiceTest {
 	private static Set<Consumption> toConsumptions(Set<Coverage> coverages) {
 		AtomicReference<Float> dialCountBefore = new AtomicReference<>(1f);
 		return coverages.stream()
-				.map(coverage -> new Consumption(coverage.getYear(), coverage.getMonth(), FILTER_MEDIUM,
-						coverage.getDialCount(),
-						coverage.getDialCount() - dialCountBefore.getAndSet(coverage.getDialCount()), false))
+				.map(coverage -> new Consumption(coverage.year(), coverage.month(), FILTER_MEDIUM, coverage.dialCount(),
+						coverage.dialCount() - dialCountBefore.getAndSet(coverage.dialCount()), false))
 				.collect(Collectors.toSet());
 	}
 
@@ -91,8 +90,8 @@ class ConsumptionServiceTest {
 		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
 		Map<Integer, List<Consumption>> yearConsumptions = toConsumptions(foundCoverages).stream()
-				.filter(consumption -> FILTER_YEARS.contains(consumption.getYear()))
-				.collect(Collectors.groupingBy(consumption -> consumption.getYear()));
+				.filter(consumption -> FILTER_YEARS.contains(consumption.year()))
+				.collect(Collectors.groupingBy(consumption -> consumption.year()));
 		Set<Consumption> expectedConsumptions = yearConsumptions.values().stream()
 				.map(consumptions -> toYearSumConsumption(consumptions)).collect(Collectors.toSet());
 
@@ -104,9 +103,8 @@ class ConsumptionServiceTest {
 
 	private Consumption toYearSumConsumption(List<Consumption> yearConsumptions) {
 		Consumption last = new TreeSet<>(yearConsumptions).last();
-		float yearSum = (float) yearConsumptions.stream().mapToDouble(consumption -> consumption.getConsumption())
-				.sum();
-		return new Consumption(last.getYear(), last.getMonth(), last.getMedium(), last.getDialCount(), yearSum, false);
+		float yearSum = (float) yearConsumptions.stream().mapToDouble(consumption -> consumption.consumption()).sum();
+		return new Consumption(last.year(), last.month(), last.medium(), last.dialCount(), yearSum, false);
 	}
 
 	@Test
@@ -114,7 +112,7 @@ class ConsumptionServiceTest {
 		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
 		Set<Consumption> expectedConsumptions = toConsumptions(foundCoverages).stream()
-				.filter(consumption -> FILTER_YEARS.contains(consumption.getYear())).collect(Collectors.toSet());
+				.filter(consumption -> FILTER_YEARS.contains(consumption.year())).collect(Collectors.toSet());
 
 		Set<Consumption> consumptions = service.getConsumptions(FILTER_MEDIUM, FILTER_YEARS, true);
 		assertNotNull(consumptions);

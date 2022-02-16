@@ -1,9 +1,11 @@
-package com.webnobis.consumption.repository.file;
+package com.webnobis.consumption.repository.file.transformer;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 import com.webnobis.consumption.model.Coverage;
+import com.webnobis.consumption.model.transformer.DateTransformer;
+import com.webnobis.consumption.model.transformer.DialCountTransformer;
 
 /**
  * Coverage to line transformer
@@ -25,8 +27,9 @@ public class CoverageToLineTransformer implements Function<Coverage, String> {
 	 */
 	@Override
 	public String apply(Coverage coverage) {
-		return String.join(SEPARATOR, Objects.requireNonNull(coverage, "coverage is null").getDate(),
-				coverage.getMedium().name(), coverage.getDialCountText());
+		Objects.requireNonNull(coverage, "coverage is null");
+		return String.join(SEPARATOR, DateTransformer.toLastDayOfMonthDate(coverage.year(), coverage.month()),
+				coverage.medium().name(), DialCountTransformer.toText(coverage.dialCount()));
 	}
 
 }

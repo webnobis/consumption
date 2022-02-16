@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
 import com.webnobis.consumption.model.Coverage;
+import com.webnobis.consumption.repository.file.transformer.LineToCoverageTransformer;
 
 /**
  * Coverage extension

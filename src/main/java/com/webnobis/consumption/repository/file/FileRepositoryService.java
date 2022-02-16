@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.repository.RepositoryService;
+import com.webnobis.consumption.repository.file.transformer.CoverageToLineTransformer;
+import com.webnobis.consumption.repository.file.transformer.LineToCoverageTransformer;
 
 /**
  * File based repository service
@@ -48,7 +50,7 @@ public class FileRepositoryService implements RepositoryService {
 	private static final Logger log = LoggerFactory.getLogger(FileRepositoryService.class);
 
 	private static final Function<Coverage, String> filenameBuilder = coverage -> MessageFormat.format("{0}{1}{2}",
-			Coverage.class.getSimpleName(), String.valueOf(Objects.requireNonNull(coverage).getYear()), FILE_EXT);
+			Coverage.class.getSimpleName(), String.valueOf(Objects.requireNonNull(coverage).year()), FILE_EXT);
 
 	private final Path folder;
 

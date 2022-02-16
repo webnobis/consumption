@@ -26,7 +26,7 @@ public class CoverageServiceImpl implements CoverageService {
 	public SortedSet<Coverage> createNewCoveragesOfCurrentMonth() {
 		YearMonth yearMonth = YearMonth.now();
 		return new TreeSet<>(Arrays.stream(Medium.values())
-				.map(medium -> new Coverage(yearMonth, medium))
+				.map(medium -> new Coverage(yearMonth.getYear(), yearMonth.getMonth(), medium, 0))
 				.collect(Collectors.toSet()));
 	}
 
@@ -34,18 +34,16 @@ public class CoverageServiceImpl implements CoverageService {
 	public SortedSet<Coverage> createNewCoveragesOfLastMonth() {
 		YearMonth yearMonth = YearMonth.now().minusMonths(1);
 		return new TreeSet<>(Arrays.stream(Medium.values())
-				.map(medium -> new Coverage(yearMonth, medium))
+				.map(medium -> new Coverage(yearMonth.getYear(), yearMonth.getMonth(), medium, 0))
 				.collect(Collectors.toSet()));
 	}
 
 	@Override
 	public SortedSet<Coverage> getCoverages(int year, Month month) {
 		Objects.requireNonNull(month, "month is null");
-		return new TreeSet<>(repositoryService.findCoverages()
-				.parallelStream()
-				.filter(coverage -> (year == coverage.getYear()))
-				.filter(coverage -> (month.equals(coverage.getMonth())))
-				.collect(Collectors.toSet()));
+		return new TreeSet<>(
+				repositoryService.findCoverages().parallelStream().filter(coverage -> (year == coverage.year()))
+						.filter(coverage -> (month.equals(coverage.month()))).collect(Collectors.toSet()));
 	}
 
 	@Override

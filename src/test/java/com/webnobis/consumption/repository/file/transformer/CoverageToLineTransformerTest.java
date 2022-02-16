@@ -1,4 +1,4 @@
-package com.webnobis.consumption.business.impl;
+package com.webnobis.consumption.repository.file.transformer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
-import com.webnobis.consumption.repository.file.CoverageToLineTransformer;
+import com.webnobis.consumption.repository.file.transformer.CoverageToLineTransformer;
 
 class CoverageToLineTransformerTest {
 

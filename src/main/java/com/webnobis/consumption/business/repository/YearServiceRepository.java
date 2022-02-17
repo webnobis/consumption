@@ -1,7 +1,6 @@
 package com.webnobis.consumption.business.repository;
 
 import java.time.Month;
-import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,10 +25,9 @@ public record YearServiceRepository(RepositoryService repositoryService) impleme
 
 	@Override
 	public Map<Integer, List<Month>> getYearsWithMonths() {
-		return repositoryService.findCoverages().stream()
-				.map(coverage -> YearMonth.of(coverage.year(), coverage.month())).distinct().sorted()
-				.collect(Collectors.groupingBy(YearMonth::getYear)).entrySet().stream().collect(Collectors.toMap(
-						Entry::getKey, entry -> entry.getValue().stream().map(YearMonth::getMonth).sorted().toList()));
+		return repositoryService.findCoverages().stream().collect(Collectors.groupingBy(Coverage::year)).entrySet()
+				.stream().collect(Collectors.toMap(Entry::getKey,
+						entry -> entry.getValue().stream().map(Coverage::month).distinct().sorted().toList()));
 	}
 
 }

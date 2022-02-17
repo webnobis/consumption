@@ -3,10 +3,10 @@ package com.webnobis.consumption.presentation.consumption;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.SortedSet;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -31,15 +31,15 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 		this.report = Objects.requireNonNull(report, "report is null");
 	}
 
-	public void update(SortedSet<Consumption> consumptions) {
-		if (Optional.ofNullable(consumptions).filter(col -> col.size() > 1).isPresent()) {
+	public void update(List<Consumption> consumptions) {
+		if (Optional.ofNullable(consumptions).filter(col -> !col.isEmpty()).isPresent()) {
 			DefaultCategoryDataset chartDataSet = new DefaultCategoryDataset();
-			Medium medium = Objects.requireNonNull(consumptions.first().medium());
+			Medium medium = Objects.requireNonNull(consumptions.get(0).medium());
 			switch (report) {
 			case MONTH:
 				// fill missing months of first year
-				String firstYear = String.valueOf(consumptions.first().year());
-				Arrays.stream(Month.values()).filter(month -> (month.compareTo(consumptions.first().month()) < 0))
+				String firstYear = String.valueOf(consumptions.get(0).year());
+				Arrays.stream(Month.values()).filter(month -> (month.compareTo(consumptions.get(0).month()) < 0))
 						.forEach(month -> {
 							chartDataSet.addValue(0, firstYear, month.getDisplayName(TextStyle.SHORT, Locale.GERMAN));
 						});
@@ -53,8 +53,7 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 				break;
 			case YEAR:
 				consumptions.forEach(consumption -> {
-					String barText = (Month.DECEMBER.equals(consumption.month())) ? String.valueOf(consumption.year())
-							: "Letzte 12 Monate";
+					String barText = consumption.year() > 0 ? String.valueOf(consumption.year()) : "Letzte 12 Monate";
 					chartDataSet.addValue(consumption.consumption(), barText, "Summe");
 				});
 				super.setChart(ChartFactory.createBarChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(),

@@ -38,7 +38,7 @@ public record CoverageServiceRepository(RepositoryService repositoryService) imp
 	@Override
 	public List<Coverage> getCoverages(int year, Month month) {
 		Objects.requireNonNull(month, "month is null");
-		return repositoryService.findCoverages().parallelStream().filter(coverage -> year == coverage.year())
+		return repositoryService.findCoverages().stream().filter(coverage -> year == coverage.year())
 				.filter(coverage -> month.equals(coverage.month())).sorted().toList();
 	}
 

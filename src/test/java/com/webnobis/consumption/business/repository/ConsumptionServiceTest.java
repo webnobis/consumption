@@ -92,10 +92,10 @@ class ConsumptionServiceTest {
 		Map<Integer, List<Consumption>> yearConsumptions = toConsumptions(foundCoverages).stream()
 				.filter(consumption -> FILTER_YEARS.contains(consumption.year()))
 				.collect(Collectors.groupingBy(consumption -> consumption.year()));
-		Set<Consumption> expectedConsumptions = yearConsumptions.values().stream()
-				.map(consumptions -> toYearSumConsumption(consumptions)).collect(Collectors.toSet());
+		List<Consumption> expectedConsumptions = yearConsumptions.values().stream()
+				.map(consumptions -> toYearSumConsumption(consumptions)).sorted().toList();
 
-		Set<Consumption> consumptions = service.getConsumptions(FILTER_MEDIUM, FILTER_YEARS, false);
+		List<Consumption> consumptions = service.getAnnualConsumptions(FILTER_MEDIUM, FILTER_YEARS, false);
 		assertNotNull(consumptions);
 		assertEquals(FILTER_YEARS.size(), consumptions.size());
 		assertTrue(Objects.deepEquals(expectedConsumptions, consumptions));
@@ -111,10 +111,10 @@ class ConsumptionServiceTest {
 	void testGetMonthConsumptions() {
 		when(repositoryService.findCoverages()).thenReturn(foundCoverages);
 
-		Set<Consumption> expectedConsumptions = toConsumptions(foundCoverages).stream()
-				.filter(consumption -> FILTER_YEARS.contains(consumption.year())).collect(Collectors.toSet());
+		List<Consumption> expectedConsumptions = toConsumptions(foundCoverages).stream()
+				.filter(consumption -> FILTER_YEARS.contains(consumption.year())).sorted().toList();
 
-		Set<Consumption> consumptions = service.getConsumptions(FILTER_MEDIUM, FILTER_YEARS, true);
+		List<Consumption> consumptions = service.getMonthlyAnnualConsumptions(FILTER_MEDIUM, FILTER_YEARS);
 		assertNotNull(consumptions);
 		assertEquals(Month.values().length * FILTER_YEARS.size(), consumptions.size());
 		assertTrue(Objects.deepEquals(expectedConsumptions, consumptions));

@@ -2,8 +2,8 @@ package com.webnobis.consumption.presentation.consumption;
 
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.util.List;
 import java.util.Objects;
-import java.util.SortedSet;
 
 import javax.swing.JInternalFrame;
 
@@ -15,15 +15,15 @@ import com.webnobis.consumption.presentation.Updateable;
 public class ConsumptionFrame extends JInternalFrame implements Updateable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private final Report report;
-	
+
 	private final ConsumptionService consumptionService;
-	
+
 	private final ConsumptionDiagramPanel panel;
-	
+
 	private final ConsumptionMenuSelection menuSelection;
-	
+
 	private final Updateable menuUpdateable;
 
 	public ConsumptionFrame(Report report, YearService yearService, ConsumptionService consumptionService) {
@@ -34,12 +34,12 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 		Container container = super.getContentPane();
 		container.setLayout(new GridLayout(1, 1));
 		container.add(panel);
-		
-		ConsumptionMenu consumptionMenu = new ConsumptionMenu(Objects.requireNonNull(yearService, "yearService is null"), this);
+
+		ConsumptionMenu consumptionMenu = new ConsumptionMenu(report, yearService, this);
 		menuSelection = consumptionMenu;
 		menuUpdateable = consumptionMenu;
 		super.setJMenuBar(consumptionMenu);
-		
+
 		super.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 
 		setSize(800, 600);
@@ -51,7 +51,16 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 	@Override
 	public void update() {
 		menuUpdateable.update();
-		SortedSet<Consumption> consumptions = consumptionService.getConsumptions(menuSelection.getSelectedMedium(), menuSelection.getSelectedYears(), Report.MONTH.equals(report));
+		List<Consumption> consumptions;
+		switch (report) {
+		case YEAR:
+			consumptions = consumptionService.getAnnualConsumptions(menuSelection.getSelectedMedium(),
+					menuSelection.getSelectedYears(), menuSelection.isLast12MonthSelected());
+			break;
+		default:
+			consumptions = consumptionService.getMonthlyAnnualConsumptions(menuSelection.getSelectedMedium(),
+					menuSelection.getSelectedYears());
+		}
 		panel.update(consumptions);
 	}
 

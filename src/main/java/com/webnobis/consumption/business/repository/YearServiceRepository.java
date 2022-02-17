@@ -21,16 +21,15 @@ public record YearServiceRepository(RepositoryService repositoryService) impleme
 
 	@Override
 	public List<Integer> getYears() {
-		return repositoryService.findCoverages().parallelStream().map(Coverage::year).distinct().sorted().toList();
+		return repositoryService.findCoverages().stream().map(Coverage::year).distinct().sorted().toList();
 	}
 
 	@Override
 	public Map<Integer, List<Month>> getYearsWithMonths() {
-		return repositoryService.findCoverages().parallelStream()
+		return repositoryService.findCoverages().stream()
 				.map(coverage -> YearMonth.of(coverage.year(), coverage.month())).distinct().sorted()
-				.collect(Collectors.groupingBy(YearMonth::getYear)).entrySet().parallelStream()
-				.collect(Collectors.toMap(Entry::getKey,
-						entry -> entry.getValue().stream().map(YearMonth::getMonth).sorted().toList()));
+				.collect(Collectors.groupingBy(YearMonth::getYear)).entrySet().stream().collect(Collectors.toMap(
+						Entry::getKey, entry -> entry.getValue().stream().map(YearMonth::getMonth).sorted().toList()));
 	}
 
 }

@@ -18,20 +18,6 @@ import com.webnobis.consumption.model.Medium;
 public interface ConsumptionService {
 
 	/**
-	 * @deprecated use either
-	 *             {@link #getAnnualConsumptions(Medium, Collection, boolean)} or
-	 *             {@link #getMonthlyAnnualConsumptions(Medium, Collection)}
-	 * @param medium  medium
-	 * @param years   years
-	 * @param monthly monthly
-	 * @return consumptions, sorted by years and months
-	 * @see #getAnnualConsumptions(Medium, Collection, boolean)
-	 * @see #getMonthlyAnnualConsumptions(Medium, Collection)
-	 */
-	@Deprecated
-	SortedSet<Consumption> getConsumptions(Medium medium, Collection<Integer> years, boolean monthly);
-
-	/**
 	 * Annual consumptions as sum of January until December each year
 	 * 
 	 * @param medium         medium

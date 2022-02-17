@@ -6,8 +6,10 @@ import com.webnobis.consumption.model.Medium;
 
 public interface ConsumptionMenuSelection {
 	
-	public Medium getSelectedMedium();
+	Medium getSelectedMedium();
 	
-	public Collection<Integer> getSelectedYears();
+	boolean isLast12MonthSelected();
+	
+	Collection<Integer> getSelectedYears();
 
 }

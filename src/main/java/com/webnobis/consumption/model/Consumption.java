@@ -3,6 +3,12 @@ package com.webnobis.consumption.model;
 import java.time.Month;
 import java.util.Objects;
 
+/**
+ * Consumption
+ * 
+ * @author steffen
+ *
+ */
 public record Consumption(int year, Month month, Medium medium, float dialCount, float consumption,
 		boolean meterChanged) implements Comparable<Consumption> {
 

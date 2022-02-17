@@ -1,22 +1,17 @@
 package com.webnobis.consumption.presentation.consumption;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableSet;
+import java.util.Comparator;
 import java.util.Objects;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JRadioButtonMenuItem;
 
 import com.webnobis.consumption.business.YearService;
 import com.webnobis.consumption.model.Medium;
@@ -25,104 +20,87 @@ import com.webnobis.consumption.presentation.Updateable;
 public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelection, Updateable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Medium DEFAULT_SELECTED_MEDIUM = Medium.STROM;
-	
+
 	private static final int DEFAULT_SELECTED_LAST_YEARS = 5;
 
-	private final YearService yearService;
+	private final Report report;
 
-	private final Updateable diagramUpdateable;
+	private final transient YearService yearService;
 
-	private final JMenu yearSelection;
+	private final transient Updateable diagramUpdateable;
 
-	private final Map<Integer, JMenuItem> yearItems;
+	private final JMenu yearMenu;
 
-	private final Map<Medium, JMenuItem> mediumItems;
+	private final JMenuItem last12MonthItem;
 
-	public ConsumptionMenu(YearService yearService, Updateable diagramUpdateable) {
+	private final JMenu mediumMenu;
+
+	public ConsumptionMenu(Report report, YearService yearService, Updateable diagramUpdateable) {
 		super();
+		this.report = Objects.requireNonNull(report, "report is null");
 		this.yearService = Objects.requireNonNull(yearService, "yearService is null");
 		this.diagramUpdateable = Objects.requireNonNull(diagramUpdateable, "diagramUpdateable is null");
-		
-		yearSelection = new JMenu("Jahre");
-		yearItems = new HashMap<>();
-		
-		update();
 
-		JMenu mediumSelection = new JMenu("Medium");
-		mediumItems = new HashMap<>();
+		yearMenu = new JMenu("Jahre");
+		if (Report.YEAR.equals(report)) {
+			last12MonthItem = new JCheckBoxMenuItem("Letzte 12 Monate");
+			last12MonthItem.addActionListener(event -> diagramUpdateable.update());
+			last12MonthItem.setSelected(true);
+		} else {
+			last12MonthItem = null;
+		}
+		update(yearService.getYears().stream().sorted(Comparator.reverseOrder()).limit(DEFAULT_SELECTED_LAST_YEARS)
+				.toList());
+
+		mediumMenu = new JMenu("Medium");
 		ButtonGroup group = new ButtonGroup();
-		Arrays.stream(Medium.values()).forEach(medium -> {
-			JMenuItem item = new JRadioButtonMenuItem(medium.name());
-			item.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					diagramUpdateable.update();
-				}
-
-			});
-			if (DEFAULT_SELECTED_MEDIUM.equals(medium)) {
-				item.setSelected(true);
-			}
-			mediumSelection.add(item);
+		Arrays.stream(Medium.values()).sorted().map(MediumMenuItem::new).forEach(item -> {
+			item.addActionListener(event -> diagramUpdateable.update());
+			item.setSelected(DEFAULT_SELECTED_MEDIUM.equals(item.getMedium()));
 			group.add(item);
-			mediumItems.put(medium, item);
+			mediumMenu.add(item);
 		});
-		
-		super.add(yearSelection);
-		super.add(mediumSelection);
+
+		super.add(yearMenu);
+		super.add(mediumMenu);
 	}
 
-	@Override
-	public Medium getSelectedMedium() {
-		return mediumItems.entrySet()
-				.parallelStream()
-				.filter(entry -> entry.getValue().isSelected())
-				.map(entry -> entry.getKey())
-				.findFirst().orElse(DEFAULT_SELECTED_MEDIUM);
-	}
-
-	@Override
-	public Collection<Integer> getSelectedYears() {
-		return yearItems.entrySet()
-				.parallelStream()
-				.filter(entry -> entry.getValue().isSelected())
-				.map(entry -> entry.getKey())
-				.collect(Collectors.toSet());
+	private void update(Collection<Integer> selectedYears) {
+		yearMenu.removeAll();
+		if (Report.YEAR.equals(report)) {
+			yearMenu.add(last12MonthItem);
+		}
+		yearService.getYears().stream().sorted(Comparator.reverseOrder()).map(YearMenuItem::new).forEach(item -> {
+			item.addActionListener(event -> diagramUpdateable.update());
+			item.setSelected(selectedYears.contains(item.getYear()));
+			yearMenu.add(item);
+		});
 	}
 
 	@Override
 	public void update() {
-		yearService.getYears()
-			.stream()
-			.filter(year -> !yearItems.containsKey(year))
-			.forEach(year -> {
-				JMenuItem item = new JCheckBoxMenuItem(String.valueOf(year));
-				item.addActionListener(new ActionListener() {
-	
-					@Override
-					public void actionPerformed(ActionEvent event) {
-						diagramUpdateable.update();
-					}	
-				});
-				yearItems.put(year, item);
-			});
-		
-		yearSelection.removeAll();
-		NavigableSet<Integer> years = new TreeSet<>(yearItems.keySet()).descendingSet();
-		years.stream()
-			.map(year -> yearItems.get(year))
-			.forEach(item -> yearSelection.add(item));
-		
-		// if nothing selected, select newest years
-		if (yearItems.values().stream().allMatch(item -> !item.isSelected())) {
-			years.stream()
-				.limit(DEFAULT_SELECTED_LAST_YEARS)
-				.map(year -> yearItems.get(year))
-				.forEach(item -> item.setSelected(true));
-		}
+		update(getSelectedYears());
+	}
+
+	@Override
+	public Medium getSelectedMedium() {
+		return IntStream.range(0, mediumMenu.getItemCount()).mapToObj(i -> (MediumMenuItem) mediumMenu.getItem(i))
+				.filter(MediumMenuItem::isSelected).map(MediumMenuItem::getMedium).findFirst()
+				.orElse(DEFAULT_SELECTED_MEDIUM);
+	}
+
+	@Override
+	public boolean isLast12MonthSelected() {
+		return Optional.ofNullable(last12MonthItem).map(JMenuItem::isSelected).orElse(false);
+	}
+
+	@Override
+	public Collection<Integer> getSelectedYears() {
+		return IntStream.range(0, yearMenu.getItemCount()).mapToObj(yearMenu::getItem)
+				.filter(item -> YearMenuItem.class.equals(item.getClass())).map(YearMenuItem.class::cast)
+				.filter(YearMenuItem::isSelected).map(YearMenuItem::getYear).toList();
 	}
 
 }

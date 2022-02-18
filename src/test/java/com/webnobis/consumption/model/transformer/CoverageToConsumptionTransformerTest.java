@@ -42,9 +42,9 @@ class CoverageToConsumptionTransformerTest {
 	}
 
 	@Test
-	void testApply() {
-		Coverage coverage1 = new Coverage(1988, Month.JANUARY, Medium.GAS, 400);
-		Coverage coverage2 = new Coverage(2001, Month.JULY, Medium.GAS, 2000);
+	void testApplyLessConsumption() {
+		Coverage coverage1 = new Coverage(1988, Month.JANUARY, Medium.GAS, 1201.01f);
+		Coverage coverage2 = new Coverage(2001, Month.JULY, Medium.GAS, 1201.02f);
 
 		Consumption consumption = transformer.apply(coverage1);
 		assertNotNull(consumption);

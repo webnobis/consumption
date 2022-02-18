@@ -29,21 +29,19 @@ public record ConsumptionServiceRepository(RepositoryService repositoryService) 
 	@Override
 	public List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years) {
 		Objects.requireNonNull(medium);
-		Objects.requireNonNull(years);
-		Map<Integer, List<Coverage>> coverages = repositoryService.findCoverages().stream()
-				.filter(coverage -> medium.equals(coverage.medium())).collect(Collectors.groupingBy(Coverage::year));
-
-		List<Integer> tmpList = coverages.keySet().stream().sorted().toList();
-		Integer yearBefore = years.stream().sorted().findFirst().map(tmpList::indexOf)
-				.map(index -> Math.max(0, index - 1)).map(tmpList::get).orElse(null);
-		if (yearBefore == null) {
+		if (Objects.requireNonNull(years).isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		Function<Coverage, Consumption> transformer = new CoverageToConsumptionTransformer(coverages.get(yearBefore)
-				.stream().sorted(Comparator.reverseOrder()).findFirst().map(Coverage::dialCount).orElse(0f));
-		return coverages.entrySet().stream().filter(entry -> years.contains(entry.getKey()))
-				.flatMap(entry -> entry.getValue().stream()).map(transformer).sorted().toList();
+		Map<Integer, List<Coverage>> coverages = repositoryService.findCoverages().stream()
+				.filter(coverage -> medium.equals(coverage.medium())).collect(Collectors.groupingBy(Coverage::year));
+		int minYear = years.stream().sorted().findFirst().orElseThrow();
+		int yearBefore = coverages.keySet().stream().sorted(Comparator.reverseOrder()).filter(year -> year < minYear)
+				.findFirst().orElseThrow();
+		float initialDialCount = coverages.get(yearBefore).stream().sorted(Comparator.reverseOrder())
+				.map(Coverage::dialCount).findFirst().orElse(0f);
+		Function<Coverage, Consumption> transformer = new CoverageToConsumptionTransformer(initialDialCount);
+		return years.stream().map(coverages::get).flatMap(List::stream).sorted().map(transformer).toList();
 	}
 
 	@Override
@@ -62,10 +60,10 @@ public record ConsumptionServiceRepository(RepositoryService repositoryService) 
 		return toSum(tmpList.subList(Math.max(0, tmpList.size() - Month.values().length), tmpList.size()), true);
 	}
 
-	private static Stream<Consumption> toSum(List<Consumption> consumptions, boolean last12Month) {
+	static Stream<Consumption> toSum(List<Consumption> consumptions, boolean last12Month) {
 		return consumptions.stream()
-				.reduce((c1, c2) -> new Consumption(last12Month ? -1 : c2.year(), Month.DECEMBER, c2.medium(),
-						Math.max(c1.dialCount(), c2.dialCount()), c1.consumption() + c2.consumption(), false))
+				.reduce((c1, c2) -> new Consumption(last12Month ? -1 : c2.year(), c2.month(), c2.medium(),
+						c2.dialCount(), c1.consumption() + c2.consumption(), false))
 				.map(Stream::of).orElseGet(Stream::empty);
 	}
 }

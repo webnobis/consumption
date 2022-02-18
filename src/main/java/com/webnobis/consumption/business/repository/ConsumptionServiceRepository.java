@@ -36,10 +36,10 @@ public record ConsumptionServiceRepository(RepositoryService repositoryService) 
 		Map<Integer, List<Coverage>> coverages = repositoryService.findCoverages().stream()
 				.filter(coverage -> medium.equals(coverage.medium())).collect(Collectors.groupingBy(Coverage::year));
 		int minYear = years.stream().sorted().findFirst().orElseThrow();
-		int yearBefore = coverages.keySet().stream().sorted(Comparator.reverseOrder()).filter(year -> year < minYear)
-				.findFirst().orElseThrow();
-		float initialDialCount = coverages.get(yearBefore).stream().sorted(Comparator.reverseOrder())
-				.map(Coverage::dialCount).findFirst().orElse(0f);
+		float initialDialCount = coverages.keySet().stream().sorted(Comparator.reverseOrder())
+				.filter(year -> year < minYear).findFirst().flatMap(yearBefore -> coverages.get(yearBefore).stream()
+						.sorted(Comparator.reverseOrder()).map(Coverage::dialCount).findFirst())
+				.orElse(0f);
 		Function<Coverage, Consumption> transformer = new CoverageToConsumptionTransformer(initialDialCount);
 		return years.stream().map(coverages::get).flatMap(List::stream).sorted().map(transformer).toList();
 	}

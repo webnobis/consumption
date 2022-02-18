@@ -2,6 +2,7 @@ package com.webnobis.consumption.business;
 
 import java.time.Month;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
@@ -48,7 +49,11 @@ public interface ConsumptionService {
 	 */
 	default List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years, Month startMonth) {
 		Objects.requireNonNull(startMonth);
-		SortedSet<Integer> sortedYears = new TreeSet<>(Objects.requireNonNull(years));
+		if (Objects.requireNonNull(years).isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		SortedSet<Integer> sortedYears = new TreeSet<>(years);
 		return Objects.requireNonNull(getMonthlyAnnualConsumptions(medium, years)).stream().filter(consumption -> {
 			if (sortedYears.first().equals(consumption.year())) {
 				return startMonth.compareTo(consumption.month()) < 1;

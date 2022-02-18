@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Month;
 import java.util.Arrays;
@@ -13,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -114,7 +115,22 @@ class ConsumptionServiceRepositoryTest {
 
 	@Test
 	void testGetAnnualConsumptionsWithLast12Month() {
-		fail("not implemented");
+		int year = 1971;
+		List<Consumption> consumptions = consumptionService.getAnnualConsumptions(Medium.GAS,
+				Collections.singleton(year), true);
+		assertEquals(2, consumptions.size());
+
+		Consumption yearConsumption = consumptions.get(0);
+		Consumption last12MonthConsumption = consumptions.get(1);
+		assertEquals(year, yearConsumption.year());
+		assertEquals(-1, last12MonthConsumption.year());
+		assertEquals(yearConsumption.dialCount(), last12MonthConsumption.dialCount());
+		assertEquals(yearConsumption.consumption(), last12MonthConsumption.consumption());
+		Stream.of(yearConsumption, last12MonthConsumption).forEach(consumption -> {
+			assertEquals(Month.DECEMBER, consumption.month());
+			assertEquals(Medium.GAS, consumption.medium());
+			assertFalse(consumption.meterChanged());
+		});
 	}
 
 	@Test
@@ -132,18 +148,39 @@ class ConsumptionServiceRepositoryTest {
 
 	@Test
 	void testGetMonthlyAnnualConsumptionsStartMonth() {
-		fail("not implemented");
+		List<Integer> years = Arrays.asList(2000, 2001, 2002);
+		List<Consumption> consumptions = consumptionService.getMonthlyAnnualConsumptions(Medium.WASSER, years,
+				Month.MARCH);
+		assertEquals((years.size() - 1) * Month.values().length, consumptions.size());
+
+		double dialCountBefore = coverages.get(2000).stream()
+				.filter(coverage -> Medium.WASSER.equals(coverage.medium()))
+				.filter(coverage -> Month.FEBRUARY.equals(coverage.month())).mapToDouble(Coverage::dialCount)
+				.findFirst().orElseThrow();
+		double dialCount = coverages.get(2002).stream().filter(coverage -> Medium.WASSER.equals(coverage.medium()))
+				.filter(coverage -> Month.FEBRUARY.equals(coverage.month())).mapToDouble(Coverage::dialCount)
+				.findFirst().orElseThrow();
+		double consumption = consumptions.stream().mapToDouble(Consumption::consumption).sum();
+		assertEquals(dialCount - dialCountBefore, consumption);
 	}
 
 	@Test
 	void testGetMonthlyConsumptions() {
-		fail("not implemented");
+		SortedSet<Integer> years = new TreeSet<>(IntStream.rangeClosed(1910, 2090).boxed().toList());
+		List<Consumption> consumptions = consumptionService.getMonthlyConsumptions(Medium.WASSER, years, Month.AUGUST);
+		assertEquals(years.size(), consumptions.size());
+
+		consumptions.forEach(consumption -> {
+			assertEquals(Month.AUGUST, consumption.month());
+			assertEquals(Medium.WASSER, consumption.medium());
+			assertFalse(consumption.meterChanged());
+		});
 	}
 
 	private static interface DialCountBuilder {
 
 		static float getDialCount(int year, Month month, Medium medium) {
-			int i = 10 + month.getValue();
+			int i = 10 + (month.getValue() * 7);
 			return Float.parseFloat(String.valueOf(year) + i + '.' + medium.name().length());
 		}
 

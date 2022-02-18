@@ -1,9 +1,15 @@
 package com.webnobis.consumption.model.transformer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Month;
+import java.util.function.Function;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.webnobis.consumption.model.Consumption;
@@ -12,22 +18,69 @@ import com.webnobis.consumption.model.Medium;
 
 class CoverageToConsumptionTransformerTest {
 
+	private static final float INITIAL_DIAL_COUNT = 333.4f;
+
+	private Function<Coverage, Consumption> transformer;
+
+	@BeforeEach
+	void setUp() {
+		transformer = new CoverageToConsumptionTransformer(INITIAL_DIAL_COUNT);
+	}
+
+	@Test
+	void testApplyInitial() {
+		Coverage coverage = new Coverage(1988, Month.JANUARY, Medium.GAS, 400.8f);
+
+		Consumption consumption = transformer.apply(coverage);
+		assertNotNull(consumption);
+		assertEquals(coverage.year(), consumption.year());
+		assertEquals(coverage.month(), consumption.month());
+		assertEquals(coverage.medium(), consumption.medium());
+		assertEquals(coverage.dialCount(), consumption.dialCount());
+		assertEquals(coverage.dialCount() - INITIAL_DIAL_COUNT, consumption.consumption());
+		assertFalse(consumption.meterChanged());
+	}
+
 	@Test
 	void testApply() {
-		float initialDialCount = 333.3f;
-		Coverage c1 = new Coverage(1988, Month.JANUARY, Medium.GAS, 400);
-		Coverage c2 = new Coverage(2001, Month.JULY, Medium.GAS, 2000);
-		Coverage c3 = new Coverage(2, Month.SEPTEMBER, Medium.GAS, 2);
+		Coverage coverage1 = new Coverage(1988, Month.JANUARY, Medium.GAS, 400);
+		Coverage coverage2 = new Coverage(2001, Month.JULY, Medium.GAS, 2000);
 
-		Consumption expectedC1 = new Consumption(c1.year(), c1.month(), c1.medium(), c1.dialCount(),
-				c1.dialCount() - initialDialCount, false);
-		Consumption expectedC2 = new Consumption(c2.year(), c2.month(), c2.medium(), c2.dialCount(), 1600, false);
-		Consumption expectedC3 = new Consumption(c3.year(), c3.month(), c3.medium(), c3.dialCount(), 2, true);
+		Consumption consumption = transformer.apply(coverage1);
+		assertNotNull(consumption);
+		assertEquals(coverage1.year(), consumption.year());
+		assertEquals(coverage1.month(), consumption.month());
+		assertEquals(coverage1.medium(), consumption.medium());
+		assertEquals(coverage1.dialCount(), consumption.dialCount());
+		assertEquals(coverage1.dialCount() - INITIAL_DIAL_COUNT, consumption.consumption());
+		assertFalse(consumption.meterChanged());
 
-		CoverageToConsumptionTransformer transformer = new CoverageToConsumptionTransformer(initialDialCount);
-		assertEquals(expectedC1, transformer.apply(c1));
-		assertEquals(expectedC2, transformer.apply(c2));
-		assertEquals(expectedC3, transformer.apply(c3));
+		consumption = transformer.apply(coverage2);
+		assertNotNull(consumption);
+		assertEquals(coverage2.dialCount() - coverage1.dialCount(), consumption.consumption());
+		assertFalse(consumption.meterChanged());
+	}
+
+	@Test
+	void testApplyMeterChanged() {
+		Coverage coverage1 = new Coverage(1988, Month.JANUARY, Medium.GAS, 400);
+		Coverage coverage2 = new Coverage(2001, Month.JULY, Medium.GAS, 3.3f);
+
+		Consumption consumption = transformer.apply(coverage1);
+		assertNotNull(consumption);
+		assertEquals(coverage1.dialCount() - INITIAL_DIAL_COUNT, consumption.consumption());
+		assertFalse(consumption.meterChanged());
+
+		consumption = transformer.apply(coverage2);
+		assertNotNull(consumption);
+		assertEquals(coverage2.dialCount(), consumption.dialCount());
+		assertEquals(coverage2.dialCount(), consumption.consumption());
+		assertTrue(consumption.meterChanged());
+	}
+
+	@Test
+	void testApplyNull() {
+		assertThrows(NullPointerException.class, () -> transformer.apply(null));
 	}
 
 }

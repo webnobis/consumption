@@ -35,13 +35,14 @@ public class CoverageToConsumptionTransformer implements Function<Coverage, Cons
 	public Consumption apply(Coverage coverage) {
 		Objects.requireNonNull(coverage, "coverage is null");
 		float consumption = coverage.dialCount() - dialCountBeforeRef.getAndSet(coverage.dialCount());
-		boolean meterChanged = consumption < 0;
-		if (meterChanged) {
+		if (consumption < 0) {
 			// assume, the consumption is the same as new meter dial count
-			consumption = coverage.dialCount();
+			return new Consumption(coverage.year(), coverage.month(), coverage.medium(), coverage.dialCount(),
+					coverage.dialCount(), true, false);
+		} else {
+			return new Consumption(coverage.year(), coverage.month(), coverage.medium(), coverage.dialCount(),
+					consumption);
 		}
-		return new Consumption(coverage.year(), coverage.month(), coverage.medium(), coverage.dialCount(), consumption,
-				meterChanged);
 	}
 
 }

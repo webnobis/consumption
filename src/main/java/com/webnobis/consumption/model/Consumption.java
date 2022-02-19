@@ -10,7 +10,21 @@ import java.util.Objects;
  *
  */
 public record Consumption(int year, Month month, Medium medium, float dialCount, float consumption,
-		boolean meterChanged) implements Comparable<Consumption> {
+		boolean meterChanged, boolean monthFromLastYear) implements Comparable<Consumption> {
+
+	/**
+	 * Calls full constructor with both flags false
+	 * 
+	 * @param year        year
+	 * @param month       month
+	 * @param medium      medium
+	 * @param dialCount   dial count
+	 * @param consumption consumption
+	 * @see #Consumption(int, Month, Medium, float, float, boolean, boolean)
+	 */
+	public Consumption(int year, Month month, Medium medium, float dialCount, float consumption) {
+		this(year, month, medium, dialCount, consumption, false, false);
+	}
 
 	@Override
 	public int compareTo(Consumption other) {
@@ -20,13 +34,19 @@ public record Consumption(int year, Month month, Medium medium, float dialCount,
 		if (year > other.year) {
 			return 1;
 		}
+		if (monthFromLastYear && !other.monthFromLastYear) {
+			return -1;
+		}
+		if (!monthFromLastYear && other.monthFromLastYear) {
+			return 1;
+		}
 		int i = month.compareTo(other.month);
 		return i == 0 ? medium.compareTo(other.medium) : i;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(medium, month, year);
+		return Objects.hash(medium, month, year, monthFromLastYear);
 	}
 
 	@Override
@@ -42,7 +62,7 @@ public record Consumption(int year, Month month, Medium medium, float dialCount,
 		}
 		Consumption other = (Consumption) obj;
 		return Objects.equals(medium, other.medium) && Objects.equals(month, other.month)
-				&& Objects.equals(year, other.year);
+				&& Objects.equals(year, other.year) && monthFromLastYear == other.monthFromLastYear;
 	}
 
 }

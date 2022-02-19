@@ -16,7 +16,7 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Report report;
+	private final boolean yearReport;
 
 	private final ConsumptionService consumptionService;
 
@@ -28,9 +28,9 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 
 	public ConsumptionFrame(Report report, YearService yearService, ConsumptionService consumptionService) {
 		super(Objects.requireNonNull(report, "report is null").getTitle(), false, true, true);
-		this.report = report;
+		yearReport = Report.YEAR.equals(report);
 		this.consumptionService = Objects.requireNonNull(consumptionService, "consumptionService is null");
-		this.panel = new ConsumptionDiagramPanel(report);
+		this.panel = new ConsumptionDiagramPanel();
 		Container container = super.getContentPane();
 		container.setLayout(new GridLayout(1, 1));
 		container.add(panel);
@@ -52,16 +52,19 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 	public void update() {
 		menuUpdateable.update();
 		List<Consumption> consumptions;
-		switch (report) {
-		case YEAR:
+		if (yearReport) {
 			consumptions = consumptionService.getAnnualConsumptions(menuSelection.getSelectedMedium(),
 					menuSelection.getSelectedYears(), menuSelection.isLast12MonthSelected());
-			break;
-		default:
+			panel.update(consumptions, Report.YEAR);
+		} else if (menuSelection.getSelectedMonth() == null) {
 			consumptions = consumptionService.getMonthlyAnnualConsumptions(menuSelection.getSelectedMedium(),
-					menuSelection.getSelectedYears());
+					menuSelection.getSelectedYears(), false);
+			panel.update(consumptions, Report.ALL_MONTH);
+		} else {
+			consumptions = consumptionService.getMonthlyConsumptions(menuSelection.getSelectedMedium(),
+					menuSelection.getSelectedYears(), menuSelection.getSelectedMonth());
+			panel.update(consumptions, Report.ONE_MONTH);
 		}
-		panel.update(consumptions);
 	}
 
 }

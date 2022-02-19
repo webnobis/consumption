@@ -24,19 +24,24 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 
 	private static final String CATEGORY = "Monat";
 
-	private final Report report;
-
-	public ConsumptionDiagramPanel(Report report) {
+	public ConsumptionDiagramPanel() {
 		super(null, false, true, false, false, false);
-		this.report = Objects.requireNonNull(report, "report is null");
 	}
 
-	public void update(List<Consumption> consumptions) {
+	public void update(List<Consumption> consumptions, Report report) {
 		if (Optional.ofNullable(consumptions).filter(col -> !col.isEmpty()).isPresent()) {
 			DefaultCategoryDataset chartDataSet = new DefaultCategoryDataset();
 			Medium medium = Objects.requireNonNull(consumptions.get(0).medium());
-			switch (report) {
-			case MONTH:
+			switch (Objects.requireNonNull(report, "report is null")) {
+			case YEAR:
+				consumptions.forEach(consumption -> {
+					String barText = consumption.year() > 0 ? String.valueOf(consumption.year()) : "Letzte 12 Monate";
+					chartDataSet.addValue(consumption.consumption(), barText, "Summe");
+				});
+				super.setChart(ChartFactory.createBarChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(),
+						chartDataSet, PlotOrientation.VERTICAL, true, true, false));
+				break;
+			case ALL_MONTH:
 				// fill missing months of first year
 				String firstYear = String.valueOf(consumptions.get(0).year());
 				Arrays.stream(Month.values()).filter(month -> (month.compareTo(consumptions.get(0).month()) < 0))
@@ -51,15 +56,13 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 				super.setChart(ChartFactory.createLineChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(),
 						chartDataSet, PlotOrientation.VERTICAL, true, true, false));
 				break;
-			case YEAR:
+			default:
 				consumptions.forEach(consumption -> {
-					String barText = consumption.year() > 0 ? String.valueOf(consumption.year()) : "Letzte 12 Monate";
-					chartDataSet.addValue(consumption.consumption(), barText, "Summe");
+					chartDataSet.addValue(consumption.consumption(), String.valueOf(consumption.year()),
+							consumption.month().getDisplayName(TextStyle.SHORT, Locale.GERMAN));
 				});
 				super.setChart(ChartFactory.createBarChart(medium.name() + TITLE_END, CATEGORY, medium.getUnit(),
 						chartDataSet, PlotOrientation.VERTICAL, true, true, false));
-				break;
-			default:
 			}
 			super.revalidate();
 		}

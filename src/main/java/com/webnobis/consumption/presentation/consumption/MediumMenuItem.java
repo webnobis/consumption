@@ -13,7 +13,7 @@ public class MediumMenuItem extends JRadioButtonMenuItem {
 	private final Medium medium;
 
 	public MediumMenuItem(Medium medium) {
-		super(Objects.requireNonNull(medium.name(), "medium is null"));
+		super(Objects.requireNonNull(medium, "medium is null").name());
 		this.medium = medium;
 	}
 

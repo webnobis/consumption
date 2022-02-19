@@ -24,7 +24,7 @@ public class ApplicationMenu extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				menuSelection.openConsumption(Report.MONTH);
+				menuSelection.openConsumption(Report.ALL_MONTH);
 			}
 
 		});

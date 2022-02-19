@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Month;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.webnobis.consumption.business.ConsumptionService;
@@ -114,7 +116,7 @@ class ConsumptionServiceRepositoryTest {
 	}
 
 	@Test
-	void testGetAnnualConsumptionsWithLast12Month() {
+	void testGetAnnualConsumptionsAndLast12Month() {
 		int year = 1971;
 		List<Consumption> consumptions = consumptionService.getAnnualConsumptions(Medium.GAS,
 				Collections.singleton(year), true);
@@ -136,7 +138,7 @@ class ConsumptionServiceRepositoryTest {
 	@Test
 	void testGetMonthlyAnnualConsumptions() {
 		List<Integer> years = Arrays.asList(2010, 2011);
-		List<Consumption> consumptions = consumptionService.getMonthlyAnnualConsumptions(Medium.WASSER, years);
+		List<Consumption> consumptions = consumptionService.getMonthlyAnnualConsumptions(Medium.WASSER, years, false);
 		assertEquals(years.size() * Month.values().length, consumptions.size());
 
 		double[] dialCounts = Stream.of(2009, 2011).map(coverages::get).flatMap(List::stream)
@@ -146,22 +148,11 @@ class ConsumptionServiceRepositoryTest {
 		assertEquals(dialCounts[1] - dialCounts[0], consumption);
 	}
 
+	@Disabled
 	@Test
-	void testGetMonthlyAnnualConsumptionsStartMonth() {
-		List<Integer> years = Arrays.asList(2000, 2001, 2002);
-		List<Consumption> consumptions = consumptionService.getMonthlyAnnualConsumptions(Medium.WASSER, years,
-				Month.MARCH);
-		assertEquals((years.size() - 1) * Month.values().length, consumptions.size());
-
-		double dialCountBefore = coverages.get(2000).stream()
-				.filter(coverage -> Medium.WASSER.equals(coverage.medium()))
-				.filter(coverage -> Month.FEBRUARY.equals(coverage.month())).mapToDouble(Coverage::dialCount)
-				.findFirst().orElseThrow();
-		double dialCount = coverages.get(2002).stream().filter(coverage -> Medium.WASSER.equals(coverage.medium()))
-				.filter(coverage -> Month.FEBRUARY.equals(coverage.month())).mapToDouble(Coverage::dialCount)
-				.findFirst().orElseThrow();
-		double consumption = consumptions.stream().mapToDouble(Consumption::consumption).sum();
-		assertEquals(dialCount - dialCountBefore, consumption);
+	void testGetMonthlyAnnualConsumptionsAndDecemberYearBefore() {
+		// TODO
+		fail("not implemented");
 	}
 
 	@Test

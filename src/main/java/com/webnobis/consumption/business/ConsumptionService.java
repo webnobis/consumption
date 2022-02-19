@@ -2,11 +2,8 @@ package com.webnobis.consumption.business;
 
 import java.time.Month;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.model.Medium;
@@ -32,38 +29,13 @@ public interface ConsumptionService {
 	/**
 	 * Monthly annual consumptions of January until December each year
 	 * 
-	 * @param medium medium
-	 * @param years  years
+	 * @param medium                medium
+	 * @param years                 years
+	 * @param andDecemberYearBefore and December year before at 1st, if true
 	 * @return consumptions, sorted by months and years
 	 */
-	List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years);
-
-	/**
-	 * Monthly annual consumptions of start month first year until the month before
-	 * last year each year
-	 * 
-	 * @param medium     medium
-	 * @param years      years
-	 * @param startMonth start month
-	 * @return consumptions, sorted by months and years
-	 */
-	default List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years, Month startMonth) {
-		Objects.requireNonNull(startMonth);
-		if (Objects.requireNonNull(years).isEmpty()) {
-			return Collections.emptyList();
-		}
-		
-		SortedSet<Integer> sortedYears = new TreeSet<>(years);
-		return Objects.requireNonNull(getMonthlyAnnualConsumptions(medium, years)).stream().filter(consumption -> {
-			if (sortedYears.first().equals(consumption.year())) {
-				return startMonth.compareTo(consumption.month()) < 1;
-			} else if (sortedYears.last().equals(consumption.year())) {
-				return startMonth.compareTo(consumption.month()) > 0;
-			} else {
-				return years.contains(consumption.year());
-			}
-		}).toList();
-	}
+	List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years,
+			boolean andDecemberYearBefore);
 
 	/**
 	 * Monthly consumptions of the month each year
@@ -75,7 +47,7 @@ public interface ConsumptionService {
 	 */
 	default List<Consumption> getMonthlyConsumptions(Medium medium, Collection<Integer> years, Month month) {
 		Objects.requireNonNull(month);
-		return Objects.requireNonNull(getMonthlyAnnualConsumptions(medium, years)).stream()
+		return Objects.requireNonNull(getMonthlyAnnualConsumptions(medium, years, false)).stream()
 				.filter(consumption -> month.equals(consumption.month())).toList();
 	}
 

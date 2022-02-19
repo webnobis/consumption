@@ -27,7 +27,7 @@ import com.webnobis.consumption.repository.RepositoryService;
 public record ConsumptionServiceRepository(RepositoryService repositoryService) implements ConsumptionService {
 
 	@Override
-	public List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years) {
+	public List<Consumption> getMonthlyAnnualConsumptions(Medium medium, Collection<Integer> years, boolean andDecemberYearBefore) {
 		Objects.requireNonNull(medium);
 		if (Objects.requireNonNull(years).isEmpty()) {
 			return Collections.emptyList();
@@ -46,7 +46,7 @@ public record ConsumptionServiceRepository(RepositoryService repositoryService) 
 
 	@Override
 	public List<Consumption> getAnnualConsumptions(Medium medium, Collection<Integer> years, boolean andLast12Month) {
-		List<Consumption> tmpList = getMonthlyAnnualConsumptions(medium, years);
+		List<Consumption> tmpList = getMonthlyAnnualConsumptions(medium, years, false);
 		return Stream.concat(getAnnualConsumptions(tmpList),
 				andLast12Month ? getLast12MonthConsumptions(tmpList) : Stream.empty()).toList();
 	}

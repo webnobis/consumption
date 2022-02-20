@@ -58,7 +58,7 @@ public class ConsumptionFrame extends JInternalFrame implements Updateable {
 			panel.update(consumptions, Report.YEAR);
 		} else if (menuSelection.getSelectedMonth() == null) {
 			consumptions = consumptionService.getMonthlyAnnualConsumptions(menuSelection.getSelectedMedium(),
-					menuSelection.getSelectedYears(), false);
+					menuSelection.getSelectedYears(), menuSelection.isDecemberLastYearSelected());
 			panel.update(consumptions, Report.ALL_MONTH);
 		} else {
 			consumptions = consumptionService.getMonthlyConsumptions(menuSelection.getSelectedMedium(),

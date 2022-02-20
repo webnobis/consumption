@@ -39,6 +39,8 @@ public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelectio
 
 	private final JMenu monthMenu;
 
+	private final JMenuItem decemberLastYearItem;
+
 	private final JMenu mediumMenu;
 
 	public ConsumptionMenu(Report report, YearService yearService, Updateable diagramUpdateable) {
@@ -56,19 +58,27 @@ public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelectio
 			last12MonthItem.setSelected(true);
 
 			monthMenu = null;
+			decemberLastYearItem = null;
 		} else {
 			last12MonthItem = null;
 
 			monthMenu = new JMenu("Monate");
 			ButtonGroup monthGroup = new ButtonGroup();
+			decemberLastYearItem = new JCheckBoxMenuItem("Beginnend mit Dezember des Vorjahres");
+			decemberLastYearItem.addActionListener(event -> diagramUpdateable.update());
+			decemberLastYearItem.setSelected(true);
+			monthMenu.add(decemberLastYearItem);
+			monthMenu.addSeparator();
 			JMenuItem allMonthItem = new JRadioButtonMenuItem("Alle Monate");
 			allMonthItem.addActionListener(event -> diagramUpdateable.update());
+			allMonthItem.addActionListener(event -> decemberLastYearItem.setEnabled(true));
 			allMonthItem.setSelected(true);
 			monthGroup.add(allMonthItem);
 			monthMenu.add(allMonthItem);
 			monthMenu.addSeparator();
 			Arrays.stream(Month.values()).sorted().map(MonthMenuItem::new).forEach(item -> {
 				item.addActionListener(event -> diagramUpdateable.update());
+				item.addActionListener(event -> decemberLastYearItem.setEnabled(false));
 				monthGroup.add(item);
 				monthMenu.add(item);
 			});
@@ -123,6 +133,11 @@ public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelectio
 	@Override
 	public boolean isLast12MonthSelected() {
 		return Optional.ofNullable(last12MonthItem).map(JMenuItem::isSelected).orElse(false);
+	}
+
+	@Override
+	public boolean isDecemberLastYearSelected() {
+		return Optional.ofNullable(decemberLastYearItem).map(JMenuItem::isSelected).orElse(false);
 	}
 
 	@Override

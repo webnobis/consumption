@@ -13,6 +13,8 @@ public interface ConsumptionMenuSelection {
 	
 	boolean isLast12MonthSelected();
 	
+	boolean isDecemberLastYearSelected();
+	
 	Collection<Integer> getSelectedYears();
 
 }

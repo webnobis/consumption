@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -46,19 +47,22 @@ public record ConsumptionServiceRepository(RepositoryService repositoryService) 
 
 		// only set if andDecemberYearBefore=true
 		Coverage decemberYearBefore = andDecemberYearBefore
-				? coverages.get(yearsWithYearBefore.first()).stream()
-						.filter(coverage -> Month.DECEMBER.equals(coverage.month())).findFirst().orElse(null)
+				? Optional.ofNullable(coverages.get(yearsWithYearBefore.first()))
+						.flatMap(list -> list.stream().filter(coverage -> Month.DECEMBER.equals(coverage.month()))
+								.findFirst())
+						.orElse(null)
 				: null;
 
 		// mostly the December, but if andDecemberYearBefore=true, the month before
-		float initialDialCount = coverages.get(yearsWithYearBefore.first()).stream().sorted(Comparator.reverseOrder())
-				.filter(coverage -> !coverage.equals(decemberYearBefore)).findFirst().map(Coverage::dialCount)
-				.orElse(0f);
+		float initialDialCount = Optional.ofNullable(coverages.get(yearsWithYearBefore.first()))
+				.flatMap(list -> list.stream().sorted(Comparator.reverseOrder())
+						.filter(coverage -> !coverage.equals(decemberYearBefore)).findFirst())
+				.map(Coverage::dialCount).orElse(0f);
 		Function<Coverage, Consumption> transformer = new CoverageToConsumptionTransformer(initialDialCount);
 		// calculate consumption also of December year before if set
 		List<Consumption> consumptions = Stream
-				.concat(andDecemberYearBefore ? Stream.of(decemberYearBefore) : Stream.empty(),
-						years.stream().map(coverages::get).flatMap(List::stream))
+				.concat((andDecemberYearBefore && decemberYearBefore != null) ? Stream.of(decemberYearBefore)
+						: Stream.empty(), years.stream().map(coverages::get).flatMap(List::stream))
 				.sorted().map(transformer).toList();
 		if (!andDecemberYearBefore) {
 			return consumptions;

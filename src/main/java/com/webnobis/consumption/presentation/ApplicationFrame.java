@@ -22,6 +22,12 @@ import com.webnobis.consumption.presentation.consumption.ConsumptionFrame;
 import com.webnobis.consumption.presentation.consumption.Report;
 import com.webnobis.consumption.presentation.coverage.CoverageFrame;
 
+/**
+ * Consumption application
+ * 
+ * @author steffen
+ *
+ */
 public class ApplicationFrame extends JFrame implements ApplicationMenuSelection, Updateable {
 
 	private static final long serialVersionUID = 1L;
@@ -29,15 +35,17 @@ public class ApplicationFrame extends JFrame implements ApplicationMenuSelection
 	/*
 	 * The title of the media planner window
 	 */
-	private static final String TITLE = "Verbrauch - Gegenüberstellung und Erfassung" + " (V " + ResourceBundle.getBundle("version").getString("version") + ", by Steffen Nobis)";
-	
-	private final YearService yearService;
-	
-	private final ConsumptionService consumptionService;
-	
-	private final CoverageService coverageService;
+	private static final String TITLE = "Verbrauch - Gegenüberstellung und Erfassung" + " (V "
+			+ ResourceBundle.getBundle("version").getString("version") + ", by Steffen Nobis)";
 
-	public ApplicationFrame(YearService yearService, ConsumptionService consumptionService, CoverageService coverageService) throws HeadlessException {
+	private final transient YearService yearService;
+
+	private final transient ConsumptionService consumptionService;
+
+	private final transient CoverageService coverageService;
+
+	public ApplicationFrame(YearService yearService, ConsumptionService consumptionService,
+			CoverageService coverageService) throws HeadlessException {
 		super(TITLE);
 		this.yearService = yearService;
 		this.consumptionService = consumptionService;
@@ -51,7 +59,7 @@ public class ApplicationFrame extends JFrame implements ApplicationMenuSelection
 		super.setContentPane(desktop);
 		super.setJMenuBar(new ApplicationMenu(this));
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		super.addWindowListener(new WindowAdapter() {
 
 			@Override
@@ -59,7 +67,7 @@ public class ApplicationFrame extends JFrame implements ApplicationMenuSelection
 				Arrays.stream(desktop.getComponents()).forEach(component -> {
 					if (JInternalFrame.class.isAssignableFrom(component.getClass())) {
 						// allow other frames to run close operations
-						((JInternalFrame)component).doDefaultCloseAction();
+						((JInternalFrame) component).doDefaultCloseAction();
 					}
 				});
 			}
@@ -106,7 +114,7 @@ public class ApplicationFrame extends JFrame implements ApplicationMenuSelection
 		for (int i = 0; i < container.getComponentCount(); i++) {
 			c = container.getComponent(i);
 			if (Updateable.class.isAssignableFrom(c.getClass())) {
-				((Updateable)c).update();
+				((Updateable) c).update();
 			}
 		}
 	}

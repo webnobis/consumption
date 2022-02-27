@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -16,25 +16,37 @@ import javax.swing.JMenuItem;
 import com.webnobis.consumption.business.YearService;
 import com.webnobis.consumption.presentation.Updateable;
 
+/**
+ * Coverage menu
+ * 
+ * @author steffen
+ *
+ */
 public class CoverageMenu extends JMenuBar implements Storable, Updateable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final YearService yearService;
+	private final transient YearService yearService;
 
-	private final CoverageMenuSelection coverageMenuSelection;
+	private final transient CoverageMenuSelection coverageMenuSelection;
 
 	private final JMenu open;
 
 	private final JMenuItem store;
 
+	/**
+	 * Coverage menu
+	 * 
+	 * @param yearService           year service
+	 * @param coverageMenuSelection coverage menu selection
+	 */
 	public CoverageMenu(YearService yearService, CoverageMenuSelection coverageMenuSelection) {
 		super();
 		this.yearService = Objects.requireNonNull(yearService, "yearService is null");
 		this.coverageMenuSelection = Objects.requireNonNull(coverageMenuSelection, "coverageMenuSelection is null");
 
 		JMenu edit = new JMenu("Bearbeiten");
-		
+
 		JMenu create = new JMenu("Neu");
 		JMenuItem item = new JMenuItem("Letzter Monat");
 		item.addActionListener(new ActionListener() {
@@ -61,7 +73,7 @@ public class CoverageMenu extends JMenuBar implements Storable, Updateable {
 		open = new JMenu("Öffnen");
 		edit.add(open);
 		update();
-		
+
 		edit.addSeparator();
 		store = new JMenuItem("Speichern");
 		store.addActionListener(new ActionListener() {
@@ -79,7 +91,7 @@ public class CoverageMenu extends JMenuBar implements Storable, Updateable {
 	@Override
 	public void update() {
 		open.removeAll();
-		Map<Integer,Set<Month>> yearsWithMonths = yearService.getYearsWithMonths();
+		Map<Integer, List<Month>> yearsWithMonths = yearService.getYearsWithMonths();
 		yearsWithMonths.keySet().stream().sorted().forEach(year -> {
 			JMenu menu = new JMenu(String.valueOf(year));
 			yearsWithMonths.get(year).stream().sorted().forEach(month -> {

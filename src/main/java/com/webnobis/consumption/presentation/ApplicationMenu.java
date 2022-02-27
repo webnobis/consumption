@@ -10,10 +10,21 @@ import javax.swing.JMenuItem;
 
 import com.webnobis.consumption.presentation.consumption.Report;
 
+/**
+ * Consumption application menu
+ * 
+ * @author steffen
+ *
+ */
 public class ApplicationMenu extends JMenuBar {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Application menu
+	 * 
+	 * @param menuSelection menu selection
+	 */
 	public ApplicationMenu(ApplicationMenuSelection menuSelection) {
 		super();
 		Objects.requireNonNull(menuSelection, "menuSelection is null");
@@ -24,7 +35,7 @@ public class ApplicationMenu extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				menuSelection.openConsumption(Report.MONTH);
+				menuSelection.openConsumption(Report.ALL_MONTH);
 			}
 
 		});

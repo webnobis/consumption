@@ -13,14 +13,27 @@ import javax.swing.event.DocumentListener;
 
 import com.webnobis.consumption.model.Medium;
 
+/**
+ * Medium panel
+ * 
+ * @author steffen
+ *
+ */
 public class MediumPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private final JTextField dialCount;
 
+	/**
+	 * Medium panel
+	 * 
+	 * @param medium      medium
+	 * @param dialCount   dial count
+	 * @param shouldStore should store
+	 */
 	public MediumPanel(Medium medium, String dialCount, ShouldStore shouldStore) {
-		super(new BorderLayout(2,0));
+		super(new BorderLayout(2, 0));
 		Objects.requireNonNull(medium, "medium is null");
 		this.dialCount = new JTextField(dialCount, JTextField.RIGHT);
 		if (shouldStore == null) {
@@ -38,12 +51,17 @@ public class MediumPanel extends JPanel {
 		this.add(label, BorderLayout.EAST);
 	}
 
+	/**
+	 * Dial count
+	 * 
+	 * @return dial count
+	 */
 	public String getDialCount() {
 		return dialCount.getText();
 	}
-	
+
 	private class ChangeListener implements DocumentListener {
-		
+
 		private final ShouldStore shouldStore;
 
 		private ChangeListener(ShouldStore shouldStore) {
@@ -64,7 +82,7 @@ public class MediumPanel extends JPanel {
 		public void changedUpdate(DocumentEvent e) {
 			shouldStore.shouldStore();
 		}
-		
+
 	}
 
 }

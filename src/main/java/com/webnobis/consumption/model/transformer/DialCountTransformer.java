@@ -2,9 +2,21 @@ package com.webnobis.consumption.model.transformer;
 
 import java.util.Optional;
 
-public abstract class DialCountTransformer {
+/**
+ * Dial count transformer
+ * 
+ * @author steffen
+ *
+ */
+public interface DialCountTransformer {
 
-	public static float toFloat(String dialCount) {
+	/**
+	 * Transform the dial count to float
+	 * 
+	 * @param dialCount dial count
+	 * @return dial count
+	 */
+	static float toFloat(String dialCount) {
 		String text = Optional.ofNullable(dialCount).orElse("0").replaceAll(",", ".");
 		int index = text.lastIndexOf('.');
 		try {
@@ -20,7 +32,13 @@ public abstract class DialCountTransformer {
 		}
 	}
 
-	public static String toText(float dialCount) {
+	/**
+	 * Transforms the dial count to text
+	 * 
+	 * @param dialCount dial count
+	 * @return dial count
+	 */
+	static String toText(float dialCount) {
 		int i = Math.round(dialCount * 10);
 		String text = String.valueOf(i);
 		if (text.length() > 1) {
@@ -28,9 +46,6 @@ public abstract class DialCountTransformer {
 		} else {
 			return "0." + text;
 		}
-	}
-
-	private DialCountTransformer() {
 	}
 
 }

@@ -6,7 +6,7 @@
 	<groupId>com.webnobis.consumption</groupId>
 	<artifactId>consumption</artifactId>
 	<name>Consumption</name>
-	<version>2.0.4</version>
+	<version>2.1.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -196,9 +196,7 @@
 						--add-opens
 						${project.module}/${project.module}.business=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.business.impl=ALL-UNNAMED
-						--add-opens
-						${project.module}/${project.module}.migrator.v1=ALL-UNNAMED
+						${project.module}/${project.module}.business.repository=ALL-UNNAMED
 						--add-opens
 						${project.module}/${project.module}.model=ALL-UNNAMED
 						--add-opens
@@ -206,7 +204,11 @@
 						--add-opens
 						${project.module}/${project.module}.repository=ALL-UNNAMED
 						--add-opens
-						${project.module}/${project.module}.repository.impl=ALL-UNNAMED</argLine>
+						${project.module}/${project.module}.repository.file=ALL-UNNAMED
+						--add-opens
+						${project.module}/${project.module}.repository.file.transformer=ALL-UNNAMED
+						--add-opens
+						${project.module}/${project.module}.repository.file.migrator.v1=ALL-UNNAMED</argLine>
 				</configuration>
 			</plugin>
 			<plugin>

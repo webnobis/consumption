@@ -10,13 +10,26 @@ import java.util.Objects;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Month year panel
+ * 
+ * @author steffen
+ *
+ */
 public class MonthYearPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Month Year panel
+	 * 
+	 * @param month month
+	 * @param year  year
+	 */
 	public MonthYearPanel(Month month, int year) {
-		super(new BorderLayout(2,0));
-		JTextField field = new JTextField(Objects.requireNonNull(month, "month is null").getDisplayName(TextStyle.FULL, Locale.GERMAN), 12);
+		super(new BorderLayout(2, 0));
+		JTextField field = new JTextField(
+				Objects.requireNonNull(month, "month is null").getDisplayName(TextStyle.FULL, Locale.GERMAN), 12);
 		field.setEditable(false);
 		field.setBackground(Color.LIGHT_GRAY);
 		this.add(field, BorderLayout.CENTER);

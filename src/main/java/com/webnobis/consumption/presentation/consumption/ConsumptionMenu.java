@@ -31,7 +31,7 @@ public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelectio
 
 	private static final Medium DEFAULT_SELECTED_MEDIUM = Medium.STROM;
 
-	private static final int DEFAULT_SELECTED_LAST_YEARS = 5;
+	private static final int DEFAULT_SELECTED_LAST_YEARS = 10;
 
 	private final Report report;
 

@@ -5,10 +5,23 @@ import java.util.Collections;
 
 import org.jfree.data.category.DefaultCategoryDataset;
 
+/**
+ * Column sortable extension
+ * 
+ * @author steffen
+ *
+ */
 public class ColumnSortedDefaultCategoryDataset extends DefaultCategoryDataset {
+
+	private static final long serialVersionUID = 1L;
 
 	private final ColumnSortedDefaultKeyedValues2D columnSortedDefaultKeyedValues2D;
 
+	/**
+	 * Sets the internal data field with key value extension
+	 * 
+	 * @see ColumnSortedDefaultKeyedValues2D
+	 */
 	public ColumnSortedDefaultCategoryDataset() {
 		super();
 		columnSortedDefaultKeyedValues2D = new ColumnSortedDefaultKeyedValues2D();
@@ -21,6 +34,9 @@ public class ColumnSortedDefaultCategoryDataset extends DefaultCategoryDataset {
 		}
 	}
 
+	/**
+	 * Sorts the columns
+	 */
 	public void sort() {
 		Collections.sort(columnSortedDefaultKeyedValues2D.superColumnKeys);
 	}

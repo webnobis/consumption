@@ -19,6 +19,12 @@ import com.webnobis.consumption.business.YearService;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.presentation.Updateable;
 
+/**
+ * Consumption menu
+ * 
+ * @author steffen
+ *
+ */
 public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelection, Updateable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,6 +49,13 @@ public class ConsumptionMenu extends JMenuBar implements ConsumptionMenuSelectio
 
 	private final JMenu mediumMenu;
 
+	/**
+	 * Report specific consumption menu
+	 * 
+	 * @param report            report
+	 * @param yearService       year service
+	 * @param diagramUpdateable diagram updateable
+	 */
 	public ConsumptionMenu(Report report, YearService yearService, Updateable diagramUpdateable) {
 		super();
 		this.report = Objects.requireNonNull(report, "report is null");

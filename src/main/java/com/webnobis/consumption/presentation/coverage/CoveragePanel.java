@@ -15,6 +15,12 @@ import com.webnobis.consumption.model.Coverage;
 import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.model.transformer.DialCountTransformer;
 
+/**
+ * Coverage panel
+ * 
+ * @author steffen
+ *
+ */
 public class CoveragePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +31,12 @@ public class CoveragePanel extends JPanel {
 
 	private final Map<Medium, MediumPanel> mediums;
 
+	/**
+	 * Coverage of month
+	 * 
+	 * @param coverages   coverages
+	 * @param shouldStore should store
+	 */
 	public CoveragePanel(List<Coverage> coverages, ShouldStore shouldStore) {
 		super(new GridLayout(Objects.requireNonNull(coverages, "coverages is null").size() + 3, 1, 0, 2));
 		if (coverages.isEmpty()) {
@@ -38,7 +50,7 @@ public class CoveragePanel extends JPanel {
 		this.add(new MonthYearPanel(month, year));
 
 		this.add(new JLabel("Zählerstände"));
-		mediums = coverages.stream().collect(Collectors.toMap(coverage -> coverage.medium(), coverage -> {
+		mediums = coverages.stream().collect(Collectors.toMap(Coverage::medium, coverage -> {
 			MediumPanel panel = new MediumPanel(coverage.medium(), DialCountTransformer.toText(coverage.dialCount()),
 					shouldStore);
 			this.add(panel);
@@ -46,6 +58,11 @@ public class CoveragePanel extends JPanel {
 		}));
 	}
 
+	/**
+	 * Coverages
+	 * 
+	 * @return coverages
+	 */
 	public Collection<Coverage> getCoverages() {
 		return mediums.entrySet().stream().map(entry -> new Coverage(year, month, entry.getKey(),
 				DialCountTransformer.toFloat(entry.getValue().getDialCount()))).collect(Collectors.toSet());

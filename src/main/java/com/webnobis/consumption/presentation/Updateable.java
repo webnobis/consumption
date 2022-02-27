@@ -1,8 +1,16 @@
 package com.webnobis.consumption.presentation;
 
-
+/**
+ * Updateable
+ * 
+ * @author steffen
+ *
+ */
 public interface Updateable {
-	
-	public void update();
+
+	/**
+	 * Updates
+	 */
+	void update();
 
 }

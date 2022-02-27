@@ -5,12 +5,24 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Month comparable
+ * 
+ * @author steffen
+ *
+ */
 public class MonthComparable implements Comparable<MonthComparable> {
 
 	private final Month month;
 
 	private final boolean monthFromLastYear;
 
+	/**
+	 * Month comparable
+	 * 
+	 * @param month             month
+	 * @param monthFromLastYear last year, if true
+	 */
 	public MonthComparable(Month month, boolean monthFromLastYear) {
 		this.month = Objects.requireNonNull(month, "month is null");
 		this.monthFromLastYear = monthFromLastYear;

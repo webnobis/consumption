@@ -16,26 +16,39 @@ import com.webnobis.consumption.business.CoverageService;
 import com.webnobis.consumption.business.YearService;
 import com.webnobis.consumption.presentation.Updateable;
 
+/**
+ * Coverage dialog
+ * 
+ * @author steffen
+ *
+ */
 public class CoverageFrame extends JInternalFrame implements CoverageMenuSelection {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final int CHANGEABLE_MONTHS = 6;
-	
+
 	private static final YearMonth firstChangeableYearMonth = YearMonth.now().minusMonths(CHANGEABLE_MONTHS);
-	
-	private final CoverageService coverageService;
-	
-	private final Updateable updateable;
-	
-	private final Updateable menuUpdateable;
-	
-	private final Storable storable;
-	
+
+	private final transient CoverageService coverageService;
+
+	private final transient Updateable updateable;
+
+	private final transient Updateable menuUpdateable;
+
+	private final transient Storable storable;
+
 	private final AtomicBoolean shouldStore;
-	
+
 	private CoveragePanel coveragePanel;
 
+	/**
+	 * Coverage
+	 * 
+	 * @param yearService     year service
+	 * @param coverageService coverage service
+	 * @param updateable      updateable
+	 */
 	public CoverageFrame(YearService yearService, CoverageService coverageService, Updateable updateable) {
 		super("Erfassung", false, true, false);
 		this.coverageService = Objects.requireNonNull(coverageService, "coverageService is null");
@@ -43,27 +56,29 @@ public class CoverageFrame extends JInternalFrame implements CoverageMenuSelecti
 
 		Container container = super.getContentPane();
 		container.setLayout(new GridLayout(1, 1));
-		
+
 		CoverageMenu coverageMenu = new CoverageMenu(Objects.requireNonNull(yearService, "yearService is null"), this);
 		menuUpdateable = coverageMenu;
 		storable = coverageMenu;
 		super.setJMenuBar(coverageMenu);
-		
+
 		shouldStore = new AtomicBoolean();
 		super.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		super.addInternalFrameListener(new InternalFrameAdapter() {
 
 			@Override
 			public void internalFrameClosing(InternalFrameEvent event) {
-				if (shouldStore.get() && JOptionPane.showConfirmDialog(getDesktopPane(), "Änderungen speichern?", "Speichern", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+				if (shouldStore.get()
+						&& JOptionPane.showConfirmDialog(getDesktopPane(), "Änderungen speichern?", "Speichern",
+								JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 					store();
 				}
 			}
 		});
-		
-		// new for current month at first 
+
+		// new for current month at first
 		create(false);
-		
+
 		super.setVisible(true);
 	}
 
@@ -71,7 +86,7 @@ public class CoverageFrame extends JInternalFrame implements CoverageMenuSelecti
 	public void create(boolean lastMonth) {
 		if (lastMonth) {
 			change(new CoveragePanel(coverageService.createNewCoveragesOfLastMonth(), new ShouldStore() {
-				
+
 				@Override
 				public void shouldStore() {
 					shouldStore.set(true);
@@ -79,7 +94,7 @@ public class CoverageFrame extends JInternalFrame implements CoverageMenuSelecti
 			}));
 		} else {
 			change(new CoveragePanel(coverageService.createNewCoveragesOfCurrentMonth(), new ShouldStore() {
-				
+
 				@Override
 				public void shouldStore() {
 					shouldStore.set(true);
@@ -93,8 +108,8 @@ public class CoverageFrame extends JInternalFrame implements CoverageMenuSelecti
 	public void open(int year, Month month) {
 		YearMonth yearMonth = YearMonth.of(year, Objects.requireNonNull(month, "month is null"));
 		boolean readonly = yearMonth.isBefore(firstChangeableYearMonth);
-		change(new CoveragePanel(coverageService.getCoverages(year, month), (readonly)? null: new ShouldStore() {
-			
+		change(new CoveragePanel(coverageService.getCoverages(year, month), (readonly) ? null : new ShouldStore() {
+
 			@Override
 			public void shouldStore() {
 				shouldStore.set(true);

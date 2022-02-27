@@ -15,6 +15,12 @@ import com.webnobis.consumption.model.Medium;
 import com.webnobis.consumption.presentation.spi.jfreechart.ColumnSortedDefaultCategoryDataset;
 import com.webnobis.consumption.presentation.spi.jfreechart.MonthComparable;
 
+/**
+ * Consumption dialog panel
+ * 
+ * @author steffen
+ *
+ */
 public class ConsumptionDiagramPanel extends ChartPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -23,10 +29,22 @@ public class ConsumptionDiagramPanel extends ChartPanel {
 
 	private static final String CATEGORY = "Monat";
 
+	/**
+	 * Configured consumption dialog panel
+	 * 
+	 * @see ChartPanel#ChartPanel(org.jfree.chart.JFreeChart, boolean, boolean,
+	 *      boolean, boolean, boolean)
+	 */
 	public ConsumptionDiagramPanel() {
 		super(null, false, true, false, false, false);
 	}
 
+	/**
+	 * Updates the report specific diagram
+	 * 
+	 * @param consumptions consumptions
+	 * @param report       report
+	 */
 	public void update(List<Consumption> consumptions, Report report) {
 		if (Optional.ofNullable(consumptions).filter(col -> !col.isEmpty()).isPresent()) {
 			ColumnSortedDefaultCategoryDataset chartDataSet = new ColumnSortedDefaultCategoryDataset();

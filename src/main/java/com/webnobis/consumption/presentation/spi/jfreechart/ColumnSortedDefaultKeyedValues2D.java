@@ -5,10 +5,19 @@ import java.util.List;
 
 import org.jfree.data.DefaultKeyedValues2D;
 
+/**
+ * Key value extension
+ * 
+ * @author steffen
+ *
+ */
 public class ColumnSortedDefaultKeyedValues2D extends DefaultKeyedValues2D {
 
 	List superColumnKeys;
 
+	/**
+	 * Opens the columns keys
+	 */
 	ColumnSortedDefaultKeyedValues2D() {
 		super();
 		try {

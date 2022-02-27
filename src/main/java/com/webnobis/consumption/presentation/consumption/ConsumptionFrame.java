@@ -12,20 +12,33 @@ import com.webnobis.consumption.business.YearService;
 import com.webnobis.consumption.model.Consumption;
 import com.webnobis.consumption.presentation.Updateable;
 
+/**
+ * Consumption dialog
+ * 
+ * @author steffen
+ *
+ */
 public class ConsumptionFrame extends JInternalFrame implements Updateable {
 
 	private static final long serialVersionUID = 1L;
 
 	private final boolean yearReport;
 
-	private final ConsumptionService consumptionService;
+	private final transient ConsumptionService consumptionService;
 
-	private final ConsumptionDiagramPanel panel;
+	private final transient ConsumptionDiagramPanel panel;
 
-	private final ConsumptionMenuSelection menuSelection;
+	private final transient ConsumptionMenuSelection menuSelection;
 
-	private final Updateable menuUpdateable;
+	private final transient Updateable menuUpdateable;
 
+	/**
+	 * Report specific consumption dialog
+	 * 
+	 * @param report             report
+	 * @param yearService        year service
+	 * @param consumptionService consumption service
+	 */
 	public ConsumptionFrame(Report report, YearService yearService, ConsumptionService consumptionService) {
 		super(Objects.requireNonNull(report, "report is null").getTitle(), false, true, true);
 		yearReport = Report.YEAR.equals(report);

@@ -13,7 +13,7 @@
 		<project.module>com.webnobis.consumption</project.module>
 		<project.main.class>com.webnobis.consumption.ConsumptionMain</project.main.class>
 		<project.author>Steffen Nobis</project.author>
-		<junit.version>5.10.0</junit.version>
+		<junit.version>5.10.2</junit.version>
 	</properties>
 
 	<developers>
